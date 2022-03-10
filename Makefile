@@ -1,4 +1,4 @@
-all: directories netcopy
+all: directories ncp
 
 CC=gcc
 CFLAGS=-Werror -Wall
@@ -8,8 +8,8 @@ DIRS=${BIN_DIR}
 
 .PHONY: directories clean
 
-netcopy: src/netcopy.c
-	gcc $< -o ${BIN_DIR}/$@
+ncp: src/netcopy.c src/arguments/arguments.c
+	gcc $^ -o ${BIN_DIR}/$@
 
 directories:
 	mkdir -p ${DIRS}
