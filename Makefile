@@ -8,7 +8,7 @@ DIRS=${BIN_DIR}
 
 .PHONY: directories clean
 
-netcopy: netcopy.c
+netcopy: src/netcopy.c
 	gcc $< -o ${BIN_DIR}/$@
 
 directories:
