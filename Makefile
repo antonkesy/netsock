@@ -8,7 +8,7 @@ DIRS=${BIN_DIR}
 
 .PHONY: directories clean
 
-ncp: src/netcopy.c src/arguments/arguments.c
+ncp: src/netcopy.c src/arguments/arguments.c src/network/network.c
 	gcc $^ -o ${BIN_DIR}/$@
 
 directories:
