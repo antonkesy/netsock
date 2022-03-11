@@ -66,7 +66,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     printf("missing follow-up argument for local ip\n");
                     return false;
                 }
-                struct sockaddr_in sock_in_src = *(struct sockaddr_in *) &out_flags->src;
+                //struct sockaddr_in sock_in_src = *(struct sockaddr_in *) &out_flags->src;
                 //TODO do later
                 /*  if (inet_pton(af, argv[i + 1], &sock_in_src.sin_addr) != 1) {
                       printf("not valid source ip address\n");
