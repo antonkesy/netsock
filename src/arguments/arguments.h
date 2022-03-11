@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <arpa/inet.h>
+#include "../netcopy.h"
 
 // ncp FILE_PATH DEST_IP DEST_PORT [OPTIONS]
 
@@ -20,20 +21,11 @@
 
 #define MIN_ARGC 3 //FILE_PATH DEST_IP DEST_PORT
 
-enum IPV {
-    _4, _6
-};
-
-enum Protocol {
-    UDP, TCP
-};
-
 typedef struct {
     const char *file_path;
-    struct sockaddr_in dest;
-    struct sockaddr_in src;
-    enum IPV ipv;
-    enum Protocol protocol;
+    struct sockaddr dest;
+    struct sockaddr src;
+    protocol_t protocol;
     bool isLocalPort;
     bool isLocalIP;
     bool isVerbose;
