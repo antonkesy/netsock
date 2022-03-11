@@ -16,9 +16,6 @@
 #define IPV4_FLAG_STR "4"
 #define IPV6_FLAG_STR "6"
 
-#define AF_IP4 AF_INET
-#define AF_IP6 AF_INET6
-
 #define MIN_ARGC 3 //FILE_PATH DEST_IP DEST_PORT
 
 typedef struct {
