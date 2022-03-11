@@ -27,7 +27,7 @@ bool get_protocol(protocol_t *pProtocol, const ip_t *ip);
 
 bool parse_ip_destination(const char *argv[2], ip_t *ip, struct sockaddr_in *out_dest);
 
-bool parse_args(unsigned int argc, char *argv[], int af, args_t *out_flags) {
+bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     if (argc < MIN_ARGC) {
         printf("too few arguments\n");
         return false;
@@ -91,10 +91,12 @@ bool parse_args(unsigned int argc, char *argv[], int af, args_t *out_flags) {
                     return false;
                 }
                 struct sockaddr_in sock_in_src = *(struct sockaddr_in *) &out_flags->src;
-                if (inet_pton(af, argv[i + 1], &sock_in_src.sin_addr) != 1) {
-                    printf("not valid source ip address\n");
-                    return false;
-                }
+                //TODO do later
+                /*  if (inet_pton(af, argv[i + 1], &sock_in_src.sin_addr) != 1) {
+                      printf("not valid source ip address\n");
+                      return false;
+                  }
+                  */
                 ++i;
                 continue;
             }

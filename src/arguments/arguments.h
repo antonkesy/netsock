@@ -31,6 +31,6 @@ typedef struct {
     bool isVerbose;
 } args_t;
 
-bool parse_args(unsigned int argc, char *argv[], int af, args_t *out_flags);
+bool parse_args(unsigned int argc, char *argv[], args_t *out_flags);
 
 #endif //NETCOPY_ARGUMENTS_H
