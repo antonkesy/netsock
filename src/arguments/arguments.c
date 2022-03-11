@@ -3,29 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-enum IPV {
-    _4, _6
-};
-
-enum IPP {
-    UDP, TCP
-};
-typedef struct {
-    bool is_ipv_set;
-    enum IPV version;
-    bool is_ipp_set;
-    enum IPP protocol;
-} ip_t;
-
 #define IS_FLAG(flag) (strcmp(&argv[i][1], (const char*)(flag))==0)
 
 void reset_args(args_t *args);
 
 bool parse_port(const char *in, in_port_t *out_port);
 
-bool get_protocol(protocol_t *pProtocol, const ip_t *ip);
-
-bool parse_ip_destination(const char *argv[2], ip_t *ip, struct sockaddr_in *out_dest);
+bool parse_ip_destination(const char *argv[2], struct sockaddr_in *out_dest);
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     if (argc < MIN_ARGC) {
@@ -38,10 +22,6 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     bool wasProtocolSet = false;
     bool wasVersionSet = false;
 
-    ip_t ip;
-    ip.is_ipp_set = false;
-    ip.is_ipv_set = false;
-
     for (unsigned int i = 3U; i < argc; ++i) {
         if (argv[i][0] == PREFIX_CHAR) {
             if (IS_FLAG(UDP_FLAG_STR)) {
@@ -49,8 +29,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     printf("double definition of protocol\n");
                     return false;
                 }
-                ip.is_ipp_set = true;
-                ip.protocol = UDP;
+                out_flags->protocol = UDP;
                 wasProtocolSet = true;
                 continue;
             }
@@ -59,8 +38,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     printf("double definition of protocol\n");
                     return false;
                 }
-                ip.is_ipp_set = true;
-                ip.protocol = TCP;
+                out_flags->protocol = TCP;
                 wasProtocolSet = true;
                 continue;
             }
@@ -69,8 +47,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     printf("double definition of version\n");
                     return false;
                 }
-                ip.is_ipv_set = true;
-                ip.version = _4;
+                out_flags->dest.sa_family = AF_INET;
                 wasVersionSet = true;
                 continue;
             }
@@ -79,8 +56,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     printf("double definition of version\n");
                     return false;
                 }
-                ip.is_ipv_set = true;
-                ip.version = _6;
+                out_flags->dest.sa_family = AF_INET6;
                 wasVersionSet = true;
                 continue;
             }
@@ -126,41 +102,37 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
         }
     }
 
-    if (!get_protocol(&out_flags->protocol, &ip))
-        return false;
+    //set default values
+    if (!wasProtocolSet) {
+        out_flags->protocol = TCP;
+    }
+    if (!wasVersionSet) {
+        out_flags->dest.sa_family = AF_INET;
+    }
 
     out_flags->file_path = argv[0];
 
-    if (ip.is_ipp_set && ip.is_ipv_set) {
-        if (!parse_ip_destination((const char **) argv[1], &ip, (struct sockaddr_in *) &out_flags->dest))
+    if (out_flags->protocol == UDP || out_flags->protocol == TCP) {
+        if (!parse_ip_destination((const char **) argv + 1, (struct sockaddr_in *) &out_flags->dest))
             return false;
     }
 
     return true;
 }
 
-bool parse_ip_destination(const char *argv[2], ip_t *ip, struct sockaddr_in *out_dest) {
-    if (ip == NULL || out_dest == NULL) return false;
+bool parse_ip_destination(const char *argv[2], struct sockaddr_in *out_dest) {
+    if (out_dest == NULL) return false;
 
-    int af;
-    switch (ip->version) {
-        case _4:
-            af = AF_IP4;
-            break;
-        case _6:
-            af = AF_IP6;
-            break;
-    }
-
-    if (inet_pton(af, argv[1], &(out_dest->sin_addr)) != 1) {
+    if (inet_pton(out_dest->sin_family, argv[0], &(out_dest->sin_addr)) != 1) {
         printf("not valid destination ip address\n");
         return false;
     }
 
-    if (!parse_port(argv[2], &out_dest->sin_port)) {
+    if (!parse_port(argv[1], &out_dest->sin_port)) {
         printf("not valid destination port\n");
         return false;
     }
+
     return true;
 }
 
@@ -182,35 +154,8 @@ bool parse_port(const char *in, in_port_t *out_port) {
 
 void reset_args(args_t *args) {
     args->file_path = NULL;
-    args->protocol = TCP_4;
+    args->protocol = TCP;
     args->isVerbose = false;
     args->isLocalIP = false;
     args->isLocalPort = false;
-}
-
-bool get_protocol(protocol_t *pProtocol, const ip_t *ip) {
-    if (!ip->is_ipp_set || !ip->is_ipv_set) return false;
-    switch (ip->protocol) {
-        case UDP:
-            switch (ip->version) {
-                case _4:
-                    *pProtocol = UDP_4;
-                    break;
-                case _6:
-                    *pProtocol = UDP_6;
-                    break;
-            }
-            break;
-        case TCP:
-            switch (ip->version) {
-                case _4:
-                    *pProtocol = TCP_4;
-                    break;
-                case _6:
-                    *pProtocol = TCP_6;
-                    break;
-            };
-            break;
-    }
-    return true;
 }
