@@ -2,7 +2,7 @@
 #define NETCOPY_H
 
 enum Protocol {
-    UDP_4, UDP_6, TCP_4, TCP_6
+    UDP, TCP
 };
 
 typedef enum Protocol protocol_t;
