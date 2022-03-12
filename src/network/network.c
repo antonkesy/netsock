@@ -27,7 +27,7 @@ size_t send_file(int file_fd, const struct sockaddr *dest, const protocol_t *pro
         perror("could not open socket");
     }
 
-    if (type == SOCK_STREAM) {
+    if (*protocol == TCP) {
         if (connect(socket_fd, dest, sizeof(struct sockaddr)) == -1) {
             perror("tcp connection error");
             return 0;
