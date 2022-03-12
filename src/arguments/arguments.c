@@ -97,7 +97,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
             printf("unknown option\n");
             return false;
         } else {
-            printf("missing options prefix\n");
+            printf("missing options prefix by %s\n", argv[i]);
             return false;
         }
     }
@@ -124,7 +124,7 @@ bool parse_ip_destination(const char *argv[2], struct sockaddr_in *out_dest) {
     if (out_dest == NULL) return false;
 
     if (inet_pton(out_dest->sin_family, argv[0], &(out_dest->sin_addr)) != 1) {
-        printf("not valid destination ip address\n");
+        printf("not valid destination ip address %s\n", argv[0]);
         return false;
     }
 
