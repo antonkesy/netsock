@@ -1,7 +1,6 @@
 #include <unistd.h>
 #include <assert.h>
 #include <stdarg.h>
-#include <stdio.h>
 #include "test_runner.h"
 
 
