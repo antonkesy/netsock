@@ -6,8 +6,6 @@
 
 typedef void (*server_func)(struct sockaddr_in *self, const char *expect_file_path);
 
-
-void run_ncp(server_func func, struct sockaddr_in *server, const char *file_path, const char *ip, const char *port,
-             ...);
+void run_ncp(server_func func, struct sockaddr_in *server, const char *args, ...);
 
 #endif //NETCOPY_TEST_RUNNER_H
