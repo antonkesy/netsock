@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/socket.h>
-#include <stdio.h>
 
 typedef ssize_t (*recv_fun)(int socket_fd, void *buffer, size_t n);
 
@@ -81,7 +80,7 @@ void test_self_port_server_tcp(struct self_port_args *args) {
     int socket_fd = socket(args->self->in.sin_family, SOCK_STREAM, 0);
     assert(socket_fd != -1);
 
-    int bind_ret = bind(socket_fd, (const struct sockaddr *) args->self, sizeof(struct sockaddr));
+    int bind_ret = bind(socket_fd, &args->self->addr, sizeof(sockaddr_t));
     assert(bind_ret == 0);
 
     struct sockaddr_in out;
