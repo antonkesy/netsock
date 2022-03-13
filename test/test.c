@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <assert.h>
+#include <memory.h>
 #include "util/socket/test_socket.h"
 #include "util/runner/test_runner.h"
 #include "util/file/test_file.h"
@@ -7,8 +8,9 @@
 #define TEST_FILE_PATH "./test.me"
 
 sockaddr_t get_local_socket(int af, uint16_t port) {
-    sockaddr_t recv;
-    recv.in.sin_family = af;
+    sockaddr_t local_socket;
+    memset(&local_socket, 0, sizeof(sockaddr_t));
+    local_socket.in.sin_family = af;
 
     char *ip;
     switch (af) {
@@ -22,10 +24,10 @@ sockaddr_t get_local_socket(int af, uint16_t port) {
             exit(1);
     }
 
-    assert(inet_pton(recv.in.sin_family, ip, &(recv.in.sin_addr)) != -1);
-    recv.in.sin_port = htons(port);
+    assert(inet_pton(local_socket.in.sin_family, ip, &(local_socket.in.sin_addr)) != -1);
+    local_socket.in.sin_port = htons(port);
 
-    return recv;
+    return local_socket;
 }
 
 void test_udp_4() {
