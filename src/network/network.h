@@ -7,6 +7,8 @@
 
 #include "../netcopy.h"
 
-size_t send_file(int file_fd, const struct sockaddr *dest, const protocol_t *protocol, size_t buf_size);
+size_t
+send_file(int file_fd, const struct sockaddr *dest, in_port_t self_port, const protocol_t *protocol, size_t buf_size);
+
 
 #endif //NETCOPY_NETWORK_H

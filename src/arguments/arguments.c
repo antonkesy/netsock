@@ -66,8 +66,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     printf("missing follow-up argument for local port\n");
                     return false;
                 }
-                struct sockaddr_in sock_in_src = *(struct sockaddr_in *) &out_flags->src;
-                if (!parse_port(argv[i + 1], &sock_in_src.sin_port)) {
+                if (!parse_port(argv[i + 1], &out_flags->self_port)) {
                     printf("not valid source port\n");
                     return false;
                 }
@@ -140,6 +139,6 @@ void reset_args(args_t *args) {
     args->file_path = NULL;
     args->protocol = TCP;
     args->isVerbose = false;
-    args->isLocalIP = false;
+    args->self_port = 0;
     args->isLocalPort = false;
 }

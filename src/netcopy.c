@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    size_t bytes_sent = send_file(fd, &flags.dest, &flags.protocol, 1024);
+    size_t bytes_sent = send_file(fd, &flags.dest,flags.self_port, &flags.protocol, 1024);
     printf("bytes sent: %lu\n", bytes_sent);
 
     return 0;

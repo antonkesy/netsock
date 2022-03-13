@@ -6,7 +6,8 @@ ssize_t udp_send(int fd, const void *buffer, size_t n, const struct sockaddr *de
 
 ssize_t tcp_send(int fd, const void *buffer, size_t n, const struct sockaddr *dest);
 
-size_t send_file(int file_fd, const struct sockaddr *dest, const protocol_t *protocol, size_t buf_size) {
+size_t
+send_file(int file_fd, const struct sockaddr *dest, in_port_t self_port, const protocol_t *protocol, size_t buf_size) {
     int type;
     ssize_t (*send)(int fd, const void *buffer, size_t n, const struct sockaddr *dest);
 
@@ -24,6 +25,18 @@ size_t send_file(int file_fd, const struct sockaddr *dest, const protocol_t *pro
     int socket_fd = socket(dest->sa_family, type, 0);
     if (socket_fd < 0) {
         perror("could not open socket");
+    }
+
+    //set port if changed
+    if (self_port != 0) {
+        struct sockaddr_in self;
+        self.sin_family = AF_INET;
+        self.sin_addr.s_addr = INADDR_ANY;
+        self.sin_port = self_port;
+
+        int bind_ret = bind(socket_fd, (const struct sockaddr *) &self, sizeof(struct sockaddr));
+        if (bind_ret == -1)
+            return 0;
     }
 
     if (*protocol == TCP) {

@@ -20,11 +20,10 @@
 typedef struct {
     const char *file_path;
     struct sockaddr dest;
-    struct sockaddr src;
     protocol_t protocol;
     bool isLocalPort;
-    bool isLocalIP;
     bool isVerbose;
+    in_port_t self_port;
 } args_t;
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags);
