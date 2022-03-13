@@ -4,12 +4,17 @@
 
 #define TEST_FILE_PATH "./test.me"
 
-void test_udp() {
+struct sockaddr_in get_local_socket(int af, uint16_t port) {
     struct sockaddr_in recv;
-    recv.sin_family = AF_INET;
+    recv.sin_family = af;
     inet_pton(recv.sin_family, "127.0.0.1", &(recv.sin_addr));
-    recv.sin_port = htons(55000);
+    recv.sin_port = htons(port);
 
+    return recv;
+}
+
+void test_udp() {
+    struct sockaddr_in recv = get_local_socket(AF_INET, 55000);
     struct test_file_server_args args;
     args.self = &recv;
     args.expected_file_path = TEST_FILE_PATH;
@@ -17,10 +22,7 @@ void test_udp() {
 }
 
 void test_tcp() {
-    struct sockaddr_in recv;
-    recv.sin_family = AF_INET;
-    inet_pton(recv.sin_family, "127.0.0.1", &(recv.sin_addr));
-    recv.sin_port = htons(55001);
+    struct sockaddr_in recv = get_local_socket(AF_INET, 55001);
 
     struct test_file_server_args args;
     args.self = &recv;
@@ -30,10 +32,7 @@ void test_tcp() {
 }
 
 void test_set_port() {
-    struct sockaddr_in recv;
-    recv.sin_family = AF_INET;
-    inet_pton(recv.sin_family, "127.0.0.1", &(recv.sin_addr));
-    recv.sin_port = htons(55002);
+    struct sockaddr_in recv = get_local_socket(AF_INET, 55002);
 
     in_port_t expected_port = htons(34234);
 
