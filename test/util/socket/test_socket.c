@@ -36,7 +36,7 @@ test_file_socket(sockaddr_t *self, const char *expect_file_path, int type, prep_
     int socket_fd = socket(self->in.sin_family, type, 0);
     assert(socket_fd >= 0);
 
-    int bind_ret = bind(socket_fd, &self->addr, sizeof(struct sockaddr));
+    int bind_ret = bind(socket_fd, &self->addr, sizeof(sockaddr_t));
     assert(bind_ret == 0);
 
     if (prep != NULL) {

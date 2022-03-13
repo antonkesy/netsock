@@ -29,19 +29,21 @@ send_file(int file_fd, const sockaddr_t *dest, const in_port_t *self_port, const
     }
 
     //set port if changed
-    if (self_port != 0) {
+    if (*self_port != 0) {
         struct sockaddr_in self;
         self.sin_family = AF_INET;
         self.sin_addr.s_addr = INADDR_ANY;
         self.sin_port = *self_port;
 
-        int bind_ret = bind(socket_fd, (const struct sockaddr *) &self, sizeof(struct sockaddr));
-        if (bind_ret == -1)
+        int bind_ret = bind(socket_fd, (const struct sockaddr *) &self, sizeof(sockaddr_t));
+        if (bind_ret == -1) {
+            perror("couldn't set port");
             return 0;
+        }
     }
 
     if (*protocol == TCP) {
-        if (connect(socket_fd, &dest->addr, sizeof(struct sockaddr)) == -1) {
+        if (connect(socket_fd, &dest->addr, sizeof(sockaddr_t)) == -1) {
             perror("tcp connection error");
             return 0;
         }
@@ -71,7 +73,7 @@ send_file(int file_fd, const sockaddr_t *dest, const in_port_t *self_port, const
 }
 
 ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest) {
-    return sendto(fd, buffer, n, 0, &dest->addr, sizeof(struct sockaddr));
+    return sendto(fd, buffer, n, 0, &dest->addr, sizeof(sockaddr_t));
 }
 
 ssize_t tcp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest) {
