@@ -5,8 +5,6 @@
 #include <fcntl.h>
 #include <sys/socket.h>
 
-#define BUF_SIZE 1024
-
 typedef ssize_t (*recv_fun)(int socket_fd, void *buffer, size_t n);
 
 typedef int(*prep_sock)();
@@ -44,24 +42,27 @@ test_file_socket(struct sockaddr_in *self, const char *expect_file_path, int typ
         socket_fd = prep();
     }
 
-    char recv_buf[BUF_SIZE];
-    char file_buf[BUF_SIZE];
+    uint size = sizeof(uint);
+    int buf_size;
+    int get_opt = getsockopt(socket_fd, SOL_SOCKET, SO_RCVBUF, (void *) &buf_size, &size);
+    assert(get_opt != -1);
+
+    char recv_buf[buf_size];
+    char file_buf[buf_size];
 
 
     ssize_t bytes_read;
     ssize_t bytes_recv;
 
-
     do {
-        //TODO not correct when not same read/recv size
-        //TODO add file pos pointers
-        //TODO work with stream
-        bytes_recv = recv(socket_fd, recv_buf, BUF_SIZE);
-        bytes_read = read(expect_fd, file_buf, BUF_SIZE);
+        bytes_recv = recv(socket_fd, recv_buf, buf_size);
         assert(bytes_recv >= 0);
+        bytes_read = read(expect_fd, file_buf, bytes_recv);
         assert(bytes_read == bytes_recv);
         assert(memcmp(recv_buf, file_buf, bytes_read) == 0);
     } while (bytes_read > 0);
+    //check EOF
+    assert(read(expect_fd, file_buf, 1) == 0);
 
     close(expect_fd);
     close(socket_fd);
