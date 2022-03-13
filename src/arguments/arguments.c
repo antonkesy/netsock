@@ -77,7 +77,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 out_flags->isVerbose = true;
                 continue;
             }
-            printf("unknown option\n");
+            printf("unknown option %s\n", argv[i]);
             return false;
         } else {
             printf("missing options prefix by %s\n", argv[i]);
