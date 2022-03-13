@@ -1,6 +1,5 @@
 #include <unistd.h>
 #include <stdio.h>
-#include <malloc.h>
 #include "network.h"
 
 ssize_t udp_send(int fd, const void *buffer, size_t n, const struct sockaddr *dest);
@@ -34,9 +33,7 @@ size_t send_file(int file_fd, const struct sockaddr *dest, const protocol_t *pro
         }
     }
 
-    uint8_t *buffer = malloc(buf_size);
-    if (buffer == NULL)
-        return -1;
+    uint8_t *buffer[buf_size];
 
     size_t sum_sent = 0U;
     ssize_t bytes_read;
