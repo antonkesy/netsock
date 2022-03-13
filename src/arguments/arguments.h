@@ -11,7 +11,6 @@
 #define UDP_FLAG_STR "u"
 #define TCP_FLAG_STR "t"
 #define LOCAL_PORT_FLAG_STR "p"
-#define LOCAL_IP_FLAG_STR "i"
 #define VERBOSE_FLAG_STR "v"
 #define IPV4_FLAG_STR "4"
 #define IPV6_FLAG_STR "6"

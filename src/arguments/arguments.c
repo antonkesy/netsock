@@ -60,22 +60,6 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasVersionSet = true;
                 continue;
             }
-            if (IS_FLAG(LOCAL_IP_FLAG_STR)) {
-                out_flags->isLocalIP = true;
-                if (i + 1 == argc) {
-                    printf("missing follow-up argument for local ip\n");
-                    return false;
-                }
-                //struct sockaddr_in sock_in_src = *(struct sockaddr_in *) &out_flags->src;
-                //TODO do later
-                /*  if (inet_pton(af, argv[i + 1], &sock_in_src.sin_addr) != 1) {
-                      printf("not valid source ip address\n");
-                      return false;
-                  }
-                  */
-                ++i;
-                continue;
-            }
             if (IS_FLAG(LOCAL_PORT_FLAG_STR)) {
                 out_flags->isLocalPort = true;
                 if (i + 1 == argc) {
