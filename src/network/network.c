@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <memory.h>
 #include "network.h"
 
 ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
@@ -30,12 +31,22 @@ send_file(int file_fd, const sockaddr_t *dest, const in_port_t *self_port, const
 
     //set port if changed
     if (*self_port != 0) {
-        struct sockaddr_in self;
-        self.sin_family = AF_INET;
-        self.sin_addr.s_addr = INADDR_ANY;
-        self.sin_port = *self_port;
+        sockaddr_t self;
+        memset(&self, 0, sizeof(sockaddr_t));
+        self.in.sin_family = dest->in.sin_family;
 
-        int bind_ret = bind(socket_fd, (const struct sockaddr *) &self, sizeof(sockaddr_t));
+        switch (dest->in.sin_family) {
+            case AF_INET:
+                self.in.sin_port = *self_port;
+                self.in.sin_addr.s_addr = INADDR_ANY;
+                break;
+            case AF_INET6:
+                self.in6.sin6_port = *self_port;
+                self.in6.sin6_addr = in6addr_any;
+                break;
+        }
+
+        int bind_ret = bind(socket_fd, &self.addr, sizeof(sockaddr_t));
         if (bind_ret == -1) {
             perror("couldn't set port");
             return 0;
