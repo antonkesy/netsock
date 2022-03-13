@@ -7,7 +7,7 @@ BIN_DIR=bin
 DIRS=${BIN_DIR}
 
 NCP_SRC=src/netcopy.c src/arguments/arguments.c src/network/network.c
-TEST_SRC=test/test.c test/util/test_socket.c test/util/test_runner.c test/util/test_file.c
+TEST_SRC=test/test.c test/util/socket/test_socket.c test/util/runner/test_runner.c test/util/file/test_file.c
 
 .PHONY: directories clean
 

@@ -1,6 +1,6 @@
-#include "util/test_socket.h"
-#include "util/test_runner.h"
-#include "util/test_file.h"
+#include "util/socket/test_socket.h"
+#include "util/runner/test_runner.h"
+#include "util/file/test_file.h"
 
 #define TEST_FILE_PATH "./test.me"
 
