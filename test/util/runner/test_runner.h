@@ -4,8 +4,14 @@
 #include <stddef.h>
 #include <arpa/inet.h>
 
-typedef void (*server_func)(struct sockaddr_in *self, const char *expect_file_path);
+typedef struct {
+    struct sockaddr_in *self;
+    void *extra;
+} server_args_t;
 
-void run_ncp(server_func func, struct sockaddr_in *server, const char *args, ...);
+typedef void (*server_fun)(server_args_t *args);
+
+
+void run_ncp(server_fun func, server_args_t *server_args, const char *args, ...);
 
 #endif //NETCOPY_TEST_RUNNER_H

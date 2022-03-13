@@ -68,10 +68,26 @@ test_file_socket(struct sockaddr_in *self, const char *expect_file_path, int typ
     close(socket_fd);
 }
 
-void test_udp_server(struct sockaddr_in *self, const char *expect_file_path) {
-    test_file_socket(self, expect_file_path, SOCK_DGRAM, NULL, recv_udp);
+void test_udp_server(struct test_file_server_args *args) {
+    test_file_socket(args->self, args->expected_file_path, SOCK_DGRAM, NULL, recv_udp);
 }
 
-void test_tcp_server(struct sockaddr_in *self, const char *expect_file_path) {
-    test_file_socket(self, expect_file_path, SOCK_STREAM, prep_tcp, recv_tcp);
+void test_tcp_server(struct test_file_server_args *args) {
+    test_file_socket(args->self, args->expected_file_path, SOCK_STREAM, prep_tcp, recv_tcp);
+}
+
+void test_self_port_server_tcp(struct self_port_args *args) {
+    int socket_fd = socket(args->self->sin_family, SOCK_STREAM, 0);
+    assert(socket_fd != -1);
+
+    int bind_ret = bind(socket_fd, (const struct sockaddr *) args->self, sizeof(struct sockaddr));
+    assert(bind_ret == 0);
+
+    struct sockaddr_in out;
+    assert(listen(socket_fd, 1) != -1);
+    socklen_t len = sizeof(struct sockaddr_in);
+    int tcp_fd = accept(socket_fd, (struct sockaddr *) &out, &len);
+    assert(tcp_fd != -1);
+
+    assert(out.sin_port == *args->expected_port);
 }

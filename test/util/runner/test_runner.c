@@ -4,8 +4,7 @@
 #include "test_runner.h"
 
 
-void run_ncp(server_func func, struct sockaddr_in *server, const char *args,
-             ...) {
+void run_ncp(server_fun func, server_args_t *server_args, const char *args, ...) {
     //convert va_args to array
     va_list va_args;
     va_start(va_args, args);
@@ -30,7 +29,7 @@ void run_ncp(server_func func, struct sockaddr_in *server, const char *args,
             assert(1);
         default:
             //first arg should be file
-            func(server, argu[1]);
+            func(server_args);
             break;
     }
 
