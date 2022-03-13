@@ -11,6 +11,7 @@ typedef union {
     struct sockaddr addr;
     struct sockaddr_in in;
     struct sockaddr_in6 in6;
+    struct sockaddr_storage storage;
 } sockaddr_t;
 
 size_t
