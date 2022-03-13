@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <arpa/inet.h>
 #include "../netcopy.h"
+#include "../network/network.h"
 
 // ncp FILE_PATH DEST_IP DEST_PORT [OPTIONS]
 
@@ -19,7 +20,7 @@
 
 typedef struct {
     const char *file_path;
-    struct sockaddr dest;
+    sockaddr_t dest;
     protocol_t protocol;
     bool isLocalPort;
     bool isVerbose;

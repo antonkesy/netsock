@@ -15,17 +15,18 @@ sockaddr_t get_local_socket(int af, uint16_t port) {
     char *ip;
     switch (af) {
         case AF_INET:
+            local_socket.in.sin_port = htons(port);
             ip = "127.0.0.1";
+            assert(inet_pton(af, ip, &(local_socket.in.sin_addr)) != -1);
             break;
         case AF_INET6:
+            local_socket.in6.sin6_port = htons(port);
             ip = "::1";
+            assert(inet_pton(af, ip, &(local_socket.in6.sin6_addr)) != -1);
             break;
         default:
             exit(1);
     }
-
-    assert(inet_pton(local_socket.in.sin_family, ip, &(local_socket.in.sin_addr)) != -1);
-    local_socket.in.sin_port = htons(port);
 
     return local_socket;
 }
@@ -40,10 +41,7 @@ void test_udp_4() {
 }
 
 void test_udp_6() {
-    sockaddr_t recv;
-    recv.in6.sin6_family = AF_INET6;
-    recv.in6.sin6_port = htons(55300);
-    recv.in6.sin6_addr = in6addr_any;
+    sockaddr_t recv = get_local_socket(AF_INET6, 55300);
 
     struct test_file_server_args args;
     args.self = &recv;

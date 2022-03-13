@@ -5,12 +5,8 @@
 #include <stdbool.h>
 #include <arpa/inet.h>
 #include "../runner/test_runner.h"
+#include "../../../src/network/network.h"
 
-typedef union {
-    struct sockaddr addr;
-    struct sockaddr_in in;
-    struct sockaddr_in6 in6;
-} sockaddr_t;
 
 struct test_file_server_args {
     sockaddr_t *self;

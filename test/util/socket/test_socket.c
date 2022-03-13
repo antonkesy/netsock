@@ -34,13 +34,13 @@ test_file_socket(sockaddr_t *self, const char *expect_file_path, int type, prep_
     assert(expect_fd >= 0);
 
     int socket_fd = socket(self->in.sin_family, type, 0);
-    assert(socket_fd != -1);
+    assert(socket_fd >= 0);
 
     int bind_ret = bind(socket_fd, &self->addr, sizeof(struct sockaddr));
     assert(bind_ret == 0);
 
     if (prep != NULL) {
-        socket_fd = prep();
+        socket_fd = prep(socket_fd);
     }
 
     uint size = sizeof(uint);

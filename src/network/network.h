@@ -7,8 +7,14 @@
 
 #include "../netcopy.h"
 
-size_t
-send_file(int file_fd, const struct sockaddr *dest, const in_port_t *self_port, const protocol_t *protocol, size_t buf_size);
+typedef union {
+    struct sockaddr addr;
+    struct sockaddr_in in;
+    struct sockaddr_in6 in6;
+} sockaddr_t;
 
+size_t
+send_file(int file_fd, const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol,
+          size_t buf_size);
 
 #endif //NETCOPY_NETWORK_H

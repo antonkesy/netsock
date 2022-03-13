@@ -47,7 +47,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     printf("double definition of version\n");
                     return false;
                 }
-                out_flags->dest.sa_family = AF_INET;
+                out_flags->dest.in.sin_family = AF_INET;
                 wasVersionSet = true;
                 continue;
             }
@@ -56,7 +56,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     printf("double definition of version\n");
                     return false;
                 }
-                out_flags->dest.sa_family = AF_INET6;
+                out_flags->dest.in.sin_family = AF_INET6;
                 wasVersionSet = true;
                 continue;
             }
@@ -90,7 +90,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
         out_flags->protocol = TCP;
     }
     if (!wasVersionSet) {
-        out_flags->dest.sa_family = AF_INET;
+        out_flags->dest.in.sin_family = AF_INET;
     }
 
     out_flags->file_path = argv[0];

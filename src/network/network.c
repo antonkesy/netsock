@@ -2,14 +2,15 @@
 #include <stdio.h>
 #include "network.h"
 
-ssize_t udp_send(int fd, const void *buffer, size_t n, const struct sockaddr *dest);
+ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
-ssize_t tcp_send(int fd, const void *buffer, size_t n, const struct sockaddr *dest);
+ssize_t tcp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
 size_t
-send_file(int file_fd, const struct sockaddr *dest, const in_port_t* self_port, const protocol_t *protocol, size_t buf_size) {
+send_file(int file_fd, const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol,
+          size_t buf_size) {
     int type;
-    ssize_t (*send)(int fd, const void *buffer, size_t n, const struct sockaddr *dest);
+    ssize_t (*send)(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
     switch (*protocol) {
         case UDP:
@@ -22,7 +23,7 @@ send_file(int file_fd, const struct sockaddr *dest, const in_port_t* self_port, 
             break;
     }
 
-    int socket_fd = socket(dest->sa_family, type, 0);
+    int socket_fd = socket(dest->in.sin_family, type, 0);
     if (socket_fd < 0) {
         perror("could not open socket");
     }
@@ -40,7 +41,7 @@ send_file(int file_fd, const struct sockaddr *dest, const in_port_t* self_port, 
     }
 
     if (*protocol == TCP) {
-        if (connect(socket_fd, dest, sizeof(struct sockaddr)) == -1) {
+        if (connect(socket_fd, &dest->addr, sizeof(struct sockaddr)) == -1) {
             perror("tcp connection error");
             return 0;
         }
@@ -69,10 +70,10 @@ send_file(int file_fd, const struct sockaddr *dest, const in_port_t* self_port, 
     return sum_sent;
 }
 
-ssize_t udp_send(int fd, const void *buffer, size_t n, const struct sockaddr *dest) {
-    return sendto(fd, buffer, n, 0, dest, sizeof(struct sockaddr));
+ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest) {
+    return sendto(fd, buffer, n, 0, &dest->addr, sizeof(struct sockaddr));
 }
 
-ssize_t tcp_send(int fd, const void *buffer, size_t n, const struct sockaddr *dest) {
+ssize_t tcp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest) {
     return send(fd, buffer, n, 0);
 }
