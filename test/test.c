@@ -26,6 +26,6 @@ int main() {
     create_test_file(TEST_FILE_PATH);
 
     test_udp();
-    //test_tcp();
+    test_tcp();
     return 0;
 }
