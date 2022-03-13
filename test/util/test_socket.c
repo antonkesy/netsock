@@ -9,7 +9,7 @@
 
 typedef ssize_t (*recv_fun)(int socket_fd, void *buffer, size_t n);
 
-typedef void(*prep_sock)();
+typedef int(*prep_sock)();
 
 ssize_t recv_udp(int socket_fd, void *buffer, size_t n) {
     socklen_t len = sizeof(struct sockaddr);
@@ -20,14 +20,17 @@ ssize_t recv_tcp(int socket_fd, void *buffer, size_t n) {
     return recv(socket_fd, buffer, n, 0);
 }
 
-void prep_tcp(int socket_fd) {
+int prep_tcp(int socket_fd) {
     struct sockaddr out;
     assert(listen(socket_fd, 1) != -1);
     socklen_t len = sizeof(struct sockaddr_in);
-    assert(accept(socket_fd, &out, &len) != -1);
+    int tcp_fd = accept(socket_fd, &out, &len);
+    assert(tcp_fd != -1);
+    return tcp_fd;
 }
 
-void test_file_socket(struct sockaddr_in *self, const char *expect_file_path, int type, prep_sock prep, recv_fun recv) {
+void
+test_file_socket(struct sockaddr_in *self, const char *expect_file_path, int type, prep_sock prep, recv_fun recv) {
     int expect_fd = open(expect_file_path, O_RDONLY);
     assert(expect_fd >= 0);
 
@@ -38,15 +41,15 @@ void test_file_socket(struct sockaddr_in *self, const char *expect_file_path, in
     assert(bind_ret == 0);
 
     if (prep != NULL) {
-        prep();
+        socket_fd = prep();
     }
 
     char recv_buf[BUF_SIZE];
     char file_buf[BUF_SIZE];
 
 
-    size_t bytes_read;
-    size_t bytes_recv;
+    ssize_t bytes_read;
+    ssize_t bytes_recv;
 
 
     do {
