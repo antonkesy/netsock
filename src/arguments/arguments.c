@@ -9,7 +9,7 @@ void reset_args(args_t *args);
 
 bool parse_port(const char *in, in_port_t *out_port);
 
-bool parse_ip_destination(const char *argv[2], struct sockaddr_in *out_dest);
+bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest);
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     if (argc < MIN_ARGC) {
@@ -96,22 +96,35 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     out_flags->file_path = argv[0];
 
     if (out_flags->protocol == UDP || out_flags->protocol == TCP) {
-        if (!parse_ip_destination((const char **) argv + 1, (struct sockaddr_in *) &out_flags->dest))
+        if (!parse_ip_destination((const char **) argv + 1, &out_flags->dest))
             return false;
     }
 
     return true;
 }
 
-bool parse_ip_destination(const char *argv[2], struct sockaddr_in *out_dest) {
+bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest) {
     if (out_dest == NULL) return false;
 
-    if (inet_pton(out_dest->sin_family, argv[0], &(out_dest->sin_addr)) != 1) {
+    void *addr_dest = NULL;
+    void *port_dest = NULL;
+    switch (out_dest->in.sin_family) {
+        case AF_INET:
+            addr_dest = &out_dest->in.sin_addr;
+            port_dest = &out_dest->in.sin_port;
+            break;
+        case AF_INET6:
+            addr_dest = &out_dest->in6.sin6_addr;
+            port_dest = &out_dest->in6.sin6_port;
+            break;
+    }
+
+    if (inet_pton(out_dest->in.sin_family, argv[0], addr_dest) != 1) {
         printf("not valid destination ip address %s\n", argv[0]);
         return false;
     }
 
-    if (!parse_port(argv[1], &out_dest->sin_port)) {
+    if (!parse_port(argv[1], port_dest)) {
         printf("not valid destination port\n");
         return false;
     }
