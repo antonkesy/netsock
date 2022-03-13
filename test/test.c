@@ -1,28 +1,56 @@
+#include <stdlib.h>
+#include <assert.h>
 #include "util/socket/test_socket.h"
 #include "util/runner/test_runner.h"
 #include "util/file/test_file.h"
 
 #define TEST_FILE_PATH "./test.me"
 
-struct sockaddr_in get_local_socket(int af, uint16_t port) {
-    struct sockaddr_in recv;
-    recv.sin_family = af;
-    inet_pton(recv.sin_family, "127.0.0.1", &(recv.sin_addr));
-    recv.sin_port = htons(port);
+sockaddr_t get_local_socket(int af, uint16_t port) {
+    sockaddr_t recv;
+    recv.in.sin_family = af;
+
+    char *ip;
+    switch (af) {
+        case AF_INET:
+            ip = "127.0.0.1";
+            break;
+        case AF_INET6:
+            ip = "::1";
+            break;
+        default:
+            exit(1);
+    }
+
+    assert(inet_pton(recv.in.sin_family, ip, &(recv.in.sin_addr)) != -1);
+    recv.in.sin_port = htons(port);
 
     return recv;
 }
 
-void test_udp() {
-    struct sockaddr_in recv = get_local_socket(AF_INET, 55000);
+void test_udp_4() {
+    sockaddr_t recv = get_local_socket(AF_INET, 55000);
+
     struct test_file_server_args args;
     args.self = &recv;
     args.expected_file_path = TEST_FILE_PATH;
     run_ncp((server_fun) &test_udp_server, (server_args_t *) &args, TEST_FILE_PATH, "127.0.0.1", "55000", "-u", NULL);
 }
 
+void test_udp_6() {
+    sockaddr_t recv;
+    recv.in6.sin6_family = AF_INET6;
+    recv.in6.sin6_port = htons(55300);
+    recv.in6.sin6_addr = in6addr_any;
+
+    struct test_file_server_args args;
+    args.self = &recv;
+    args.expected_file_path = TEST_FILE_PATH;
+    run_ncp((server_fun) &test_udp_server, (server_args_t *) &args, TEST_FILE_PATH, "::1", "55300", "-u", "-6", NULL);
+}
+
 void test_tcp() {
-    struct sockaddr_in recv = get_local_socket(AF_INET, 55001);
+    sockaddr_t recv = get_local_socket(AF_INET, 55001);
 
     struct test_file_server_args args;
     args.self = &recv;
@@ -32,7 +60,7 @@ void test_tcp() {
 }
 
 void test_set_port() {
-    struct sockaddr_in recv = get_local_socket(AF_INET, 55002);
+    sockaddr_t recv = get_local_socket(AF_INET, 55002);
 
     in_port_t expected_port = htons(34234);
 
@@ -47,7 +75,8 @@ void test_set_port() {
 int main() {
     create_test_file(TEST_FILE_PATH);
 
-    test_udp();
+    test_udp_4();
+    //test_udp_6();
     test_tcp();
     test_set_port();
     return 0;

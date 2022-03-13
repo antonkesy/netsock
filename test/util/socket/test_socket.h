@@ -6,8 +6,14 @@
 #include <arpa/inet.h>
 #include "../runner/test_runner.h"
 
+typedef union {
+    struct sockaddr addr;
+    struct sockaddr_in in;
+    struct sockaddr_in6 in6;
+} sockaddr_t;
+
 struct test_file_server_args {
-    struct sockaddr_in *self;
+    sockaddr_t *self;
     const char *expected_file_path;
 };
 
@@ -16,7 +22,7 @@ void test_udp_server(struct test_file_server_args *args);
 void test_tcp_server(struct test_file_server_args *args);
 
 struct self_port_args {
-    struct sockaddr_in *self;
+    sockaddr_t *self;
     in_port_t *expected_port;
 };
 

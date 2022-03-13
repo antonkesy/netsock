@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <stdio.h>
 
 typedef ssize_t (*recv_fun)(int socket_fd, void *buffer, size_t n);
 
@@ -28,14 +29,14 @@ int prep_tcp(int socket_fd) {
 }
 
 void
-test_file_socket(struct sockaddr_in *self, const char *expect_file_path, int type, prep_sock prep, recv_fun recv) {
+test_file_socket(sockaddr_t *self, const char *expect_file_path, int type, prep_sock prep, recv_fun recv) {
     int expect_fd = open(expect_file_path, O_RDONLY);
     assert(expect_fd >= 0);
 
-    int socket_fd = socket(self->sin_family, type, 0);
+    int socket_fd = socket(self->in.sin_family, type, 0);
     assert(socket_fd != -1);
 
-    int bind_ret = bind(socket_fd, (const struct sockaddr *) self, sizeof(struct sockaddr));
+    int bind_ret = bind(socket_fd, &self->addr, sizeof(struct sockaddr));
     assert(bind_ret == 0);
 
     if (prep != NULL) {
@@ -77,7 +78,7 @@ void test_tcp_server(struct test_file_server_args *args) {
 }
 
 void test_self_port_server_tcp(struct self_port_args *args) {
-    int socket_fd = socket(args->self->sin_family, SOCK_STREAM, 0);
+    int socket_fd = socket(args->self->in.sin_family, SOCK_STREAM, 0);
     assert(socket_fd != -1);
 
     int bind_ret = bind(socket_fd, (const struct sockaddr *) args->self, sizeof(struct sockaddr));
