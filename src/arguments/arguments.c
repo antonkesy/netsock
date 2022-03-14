@@ -1,4 +1,5 @@
 #include "arguments.h"
+#include "../out/out.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +14,7 @@ bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest);
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     if (argc < MIN_ARGC) {
-        printf("too few arguments\n");
+        PRINTE("too few arguments")
         return false;
     }
 
@@ -26,7 +27,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
         if (argv[i][0] == PREFIX_CHAR) {
             if (IS_FLAG(UDP_FLAG_STR)) {
                 if (wasProtocolSet) {
-                    printf("double definition of protocol\n");
+                    PRINTE("double definition of protocol")
                     return false;
                 }
                 out_flags->protocol = UDP;
@@ -35,7 +36,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
             }
             if (IS_FLAG(TCP_FLAG_STR)) {
                 if (wasProtocolSet) {
-                    printf("double definition of protocol\n");
+                    PRINTE("double definition of protocol")
                     return false;
                 }
                 out_flags->protocol = TCP;
@@ -44,7 +45,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
             }
             if (IS_FLAG(IPV4_FLAG_STR)) {
                 if (wasVersionSet) {
-                    printf("double definition of version\n");
+                    PRINTE("double definition of version")
                     return false;
                 }
                 out_flags->dest.in.sin_family = AF_INET;
@@ -53,7 +54,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
             }
             if (IS_FLAG(IPV6_FLAG_STR)) {
                 if (wasVersionSet) {
-                    printf("double definition of version\n");
+                    PRINTE("double definition of version")
                     return false;
                 }
                 out_flags->dest.in.sin_family = AF_INET6;
@@ -63,11 +64,11 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
             if (IS_FLAG(LOCAL_PORT_FLAG_STR)) {
                 out_flags->isLocalPort = true;
                 if (i + 1 == argc) {
-                    printf("missing follow-up argument for local port\n");
+                    PRINTE("missing follow-up argument for local port")
                     return false;
                 }
                 if (!parse_port(argv[i + 1], &out_flags->self_port)) {
-                    printf("not valid source port\n");
+                    PRINTE("not valid source port")
                     return false;
                 }
                 ++i;
@@ -77,10 +78,10 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 out_flags->isVerbose = true;
                 continue;
             }
-            printf("unknown option %s\n", argv[i]);
+            PRINTEI("unknown option", argv[i])
             return false;
         } else {
-            printf("missing options prefix by %s\n", argv[i]);
+            PRINTEI("missing options prefix by ", argv[i])
             return false;
         }
     }
@@ -120,12 +121,11 @@ bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest) {
     }
 
     if (inet_pton(out_dest->in.sin_family, argv[0], addr_dest) != 1) {
-        printf("not valid destination ip address %s\n", argv[0]);
+        PRINTEI("not valid destination ip address ", argv[0])
         return false;
     }
 
     if (!parse_port(argv[1], port_dest)) {
-        printf("not valid destination port\n");
         return false;
     }
 
@@ -141,6 +141,7 @@ bool parse_port(const char *in, in_port_t *out_port) {
     size_t len = strlen(in);
     size_t end_offset = (end - in);
     if (end_offset != len || port == 0 || port > 65535) {
+        PRINTEI("port out of range ", out_port)
         return false;
     }
 
