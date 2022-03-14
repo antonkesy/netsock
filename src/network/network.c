@@ -9,9 +9,17 @@ ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
 ssize_t tcp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
-int prepare_socket(const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol) {
-    int type;
+typedef ssize_t (*recv_fun)(int fd, void *buffer, size_t n);
 
+ssize_t udp_recv(int fd, void *buffer, size_t n);
+
+ssize_t tcp_recv(int fd, void *buffer, size_t n);
+
+size_t recv_stdin(int socket, recv_fun recv, size_t buf_size);
+
+int prepare_socket(sockaddr_t *dest, const protocol_t *protocol, bool is_listener) {
+
+    int type;
     switch (*protocol) {
         case UDP:
             type = SOCK_DGRAM;
@@ -19,6 +27,8 @@ int prepare_socket(const sockaddr_t *dest, const in_port_t *self_port, const pro
         case TCP:
             type = SOCK_STREAM;
             break;
+        default:
+            return -1;
     }
 
     int socket_fd = socket(dest->in.sin_family, type, 0);
@@ -26,34 +36,41 @@ int prepare_socket(const sockaddr_t *dest, const in_port_t *self_port, const pro
         perror("could not open socket");
     }
 
-    //set port if changed
-    if (*self_port != 0) {
-        sockaddr_t self;
-        memset(&self, 0, sizeof(sockaddr_t));
-        self.in.sin_family = dest->in.sin_family;
 
+    if (is_listener == true) {
         switch (dest->in.sin_family) {
             case AF_INET:
-                self.in.sin_port = *self_port;
-                self.in.sin_addr.s_addr = INADDR_ANY;
+                dest->in.sin_addr.s_addr = INADDR_ANY;
                 break;
             case AF_INET6:
-                self.in6.sin6_port = *self_port;
-                self.in6.sin6_addr = in6addr_any;
+                dest->in6.sin6_addr = in6addr_any;
                 break;
         }
-
-        int bind_ret = bind(socket_fd, &self.addr, sizeof(sockaddr_t));
+        int bind_ret = bind(socket_fd, &dest->addr, sizeof(sockaddr_t));
         if (bind_ret == -1) {
-            perror("couldn't set port");
-            return 0;
+            perror("couldn't bind socket");
+            return -1;
         }
     }
 
     if (*protocol == TCP) {
-        if (connect(socket_fd, &dest->addr, sizeof(sockaddr_t)) == -1) {
-            perror("tcp connection error");
-            return 0;
+        if (is_listener) {
+            int list_ret = listen(socket_fd, 1);
+            if (list_ret == -1) {
+                perror("listen failed");
+                return -1;
+            }
+            socklen_t len = sizeof(struct sockaddr_in);
+            int tcp_acc_sock = accept(socket_fd, NULL, &len);
+            if (tcp_acc_sock < 0) {
+                perror("accepting failed");
+            }
+            return tcp_acc_sock;
+        } else {
+            if (connect(socket_fd, &dest->addr, sizeof(sockaddr_t)) == -1) {
+                perror("tcp connection error");
+                return -1;
+            }
         }
     }
 
@@ -61,7 +78,7 @@ int prepare_socket(const sockaddr_t *dest, const in_port_t *self_port, const pro
 }
 
 size_t send_stdin(int socket, const sockaddr_t *dest, send_fun send, size_t buf_size) {
-    uint8_t *buffer[buf_size];
+    uint8_t buffer[buf_size];
 
     size_t sum_sent = 0U;
     size_t bytes_read;
@@ -99,4 +116,42 @@ size_t send_in(int socket, const sockaddr_t *dest, const protocol_t *protocol, s
             break;
     }
     return send_stdin(socket, dest, send, buf_size);
+}
+
+size_t recv_in(int socket, const sockaddr_t *dest, const protocol_t *protocol, size_t buf_size) {
+    recv_fun recv;
+    switch (*protocol) {
+        case UDP:
+            recv = &udp_recv;
+            break;
+        case TCP:
+            recv = &tcp_recv;
+            break;
+    }
+    return recv_stdin(socket, recv, buf_size);
+}
+
+size_t recv_stdin(int socket, recv_fun recv, size_t buf_size) {
+    uint8_t buffer[buf_size];
+
+    size_t sum_recv = 0U;
+    size_t bytes_recv;
+    do {
+        bytes_recv = recv(socket, buffer, buf_size);
+        buffer[bytes_recv] = '\0';
+        fprintf(stdout, "%s", (char *) buffer);
+        sum_recv += bytes_recv;
+    } while (bytes_recv > 0);
+
+    close(socket);
+    return sum_recv;
+}
+
+ssize_t udp_recv(int fd, void *buffer, size_t n) {
+    socklen_t len = sizeof(sockaddr_t);
+    return recvfrom(fd, buffer, n, 0, NULL, &len);
+}
+
+ssize_t tcp_recv(int fd, void *buffer, size_t n) {
+    return recv(fd, buffer, n, 0);
 }

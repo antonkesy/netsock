@@ -76,36 +76,6 @@ void test_tcp_6() {
             NULL);
 }
 
-void test_set_port_4() {
-    sockaddr_t recv = get_local_socket(AF_INET, 55002);
-
-    in_port_t expected_port = htons(34234);
-
-    server_args_t args;
-    args.self = &recv;
-    args.file_path = NULL;
-    args.is_stdin = false;
-    args.extra = &expected_port;
-
-    run_ncp((server_fun) &test_self_port_server_tcp, (server_args_t *) &args, IP4_LOOPBACK_STR, "55002",
-            "-p", "34234", NULL);
-}
-
-void test_set_port_6() {
-    sockaddr_t recv = get_local_socket(AF_INET6, 54343);
-
-    in_port_t expected_port = htons(44444);
-
-    server_args_t args;
-    args.self = &recv;
-    args.file_path = NULL;
-    args.is_stdin = false;
-    args.extra = &expected_port;
-
-    run_ncp((server_fun) &test_self_port_server_tcp, &args, IP6_LOOPBACK_STR, "54343",
-            "-p", "44444", "-6", NULL);
-}
-
 int main() {
     create_test_file(TEST_FILE_PATH);
 
@@ -113,8 +83,6 @@ int main() {
     test_udp_6();
     test_tcp_4();
     test_tcp_6();
-    test_set_port_4();
-    test_set_port_6();
 
     return 0;
 }

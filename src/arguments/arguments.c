@@ -62,21 +62,12 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasVersionSet = true;
                 continue;
             }
-            if (IS_FLAG(option, LOCAL_PORT_FLAG_STR)) {
-                out_flags->isLocalPort = true;
-                if (i + 1 == argc) {
-                    PRINTE("missing follow-up argument for local port")
-                    return false;
-                }
-                if (!parse_port(argv[i + 1], &out_flags->self_port)) {
-                    PRINTE("not valid source port")
-                    return false;
-                }
-                ++i;
-                continue;
-            }
             if (IS_FLAG(option, VERBOSE_FLAG_STR)) {
                 out_flags->isVerbose = true;
+                continue;
+            }
+            if (IS_FLAG(option, LISTEN_FLAG_STR)) {
+                out_flags->is_listening = true;
                 continue;
             }
             PRINTEI("unknown option", argv[i])
@@ -151,6 +142,5 @@ bool parse_port(const char *in, in_port_t *out_port) {
 void reset_args(args_t *args) {
     args->protocol = TCP;
     args->isVerbose = false;
-    args->self_port = 0;
-    args->isLocalPort = false;
+    args->is_listening = false;
 }
