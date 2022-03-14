@@ -1,4 +1,4 @@
-all: directories ncp tests
+all: directories netcopy tests
 
 CC=gcc
 CFLAGS=-Werror -Wall
@@ -11,10 +11,10 @@ TEST_SRC=test/test.c test/util/socket/test_socket.c test/util/runner/test_runner
 
 .PHONY: directories clean
 
-ncp: ${NCP_SRC}
+netcopy: ${NCP_SRC}
 	${CC} ${CFLAGS} $^ -o ${BIN_DIR}/$@
 
-tests: ${TEST_SRC} ncp
+tests: ${TEST_SRC} netcopy
 	${CC} ${CFLAGS} ${TEST_SRC} -o ${BIN_DIR}/$@
 
 directories:

@@ -6,8 +6,6 @@
 #include "../netcopy.h"
 #include "../network/network.h"
 
-// ncp FILE_PATH DEST_IP DEST_PORT [OPTIONS]
-
 #define PREFIX_CHAR '-'
 #define UDP_FLAG_STR "u"
 #define TCP_FLAG_STR "t"
@@ -16,10 +14,9 @@
 #define IPV4_FLAG_STR "4"
 #define IPV6_FLAG_STR "6"
 
-#define MIN_ARGC 3 //FILE_PATH DEST_IP DEST_PORT
+#define MIN_ARGC 2 //DEST_IP DEST_PORT
 
 typedef struct {
-    const char *file_path;
     sockaddr_t dest;
     protocol_t protocol;
     bool isLocalPort;

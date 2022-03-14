@@ -34,41 +34,45 @@ sockaddr_t get_local_socket(int af, uint16_t port) {
 void test_udp_4() {
     sockaddr_t recv = get_local_socket(AF_INET, 55000);
 
-    struct test_file_server_args args;
+    server_args_t args;
     args.self = &recv;
-    args.expected_file_path = TEST_FILE_PATH;
-    run_ncp((server_fun) &test_udp_server, (server_args_t *) &args, TEST_FILE_PATH, IP4_LOOPBACK_STR, "55000", "-u",
+    args.file_path = TEST_FILE_PATH;
+    args.is_stdin = true;
+    run_ncp((server_fun) &test_udp_server, &args, IP4_LOOPBACK_STR, "55000", "-u",
             NULL);
 }
 
 void test_udp_6() {
     sockaddr_t recv = get_local_socket(AF_INET6, 55300);
 
-    struct test_file_server_args args;
+    server_args_t args;
     args.self = &recv;
-    args.expected_file_path = TEST_FILE_PATH;
-    run_ncp((server_fun) &test_udp_server, (server_args_t *) &args, TEST_FILE_PATH, IP6_LOOPBACK_STR, "55300", "-u",
+    args.file_path = TEST_FILE_PATH;
+    args.is_stdin = true;
+    run_ncp((server_fun) &test_udp_server, &args, IP6_LOOPBACK_STR, "55300", "-u",
             "-6", NULL);
 }
 
 void test_tcp_4() {
     sockaddr_t recv = get_local_socket(AF_INET, 55001);
 
-    struct test_file_server_args args;
+    server_args_t args;
     args.self = &recv;
-    args.expected_file_path = TEST_FILE_PATH;
+    args.file_path = TEST_FILE_PATH;
+    args.is_stdin = true;
 
-    run_ncp((server_fun) &test_tcp_server, (server_args_t *) &args, TEST_FILE_PATH, IP4_LOOPBACK_STR, "55001", NULL);
+    run_ncp((server_fun) &test_tcp_server, &args, IP4_LOOPBACK_STR, "55001", NULL);
 }
 
 void test_tcp_6() {
     sockaddr_t recv = get_local_socket(AF_INET6, 55201);
 
-    struct test_file_server_args args;
+    server_args_t args;
     args.self = &recv;
-    args.expected_file_path = TEST_FILE_PATH;
+    args.file_path = TEST_FILE_PATH;
+    args.is_stdin = true;
 
-    run_ncp((server_fun) &test_tcp_server, (server_args_t *) &args, TEST_FILE_PATH, IP6_LOOPBACK_STR, "55201", "-6",
+    run_ncp((server_fun) &test_tcp_server, &args, IP6_LOOPBACK_STR, "55201", "-6",
             NULL);
 }
 
@@ -77,11 +81,13 @@ void test_set_port_4() {
 
     in_port_t expected_port = htons(34234);
 
-    struct self_port_args args;
+    server_args_t args;
     args.self = &recv;
-    args.expected_port = &expected_port;
+    args.file_path = NULL;
+    args.is_stdin = false;
+    args.extra = &expected_port;
 
-    run_ncp((server_fun) &test_self_port_server_tcp, (server_args_t *) &args, TEST_FILE_PATH, IP4_LOOPBACK_STR, "55002",
+    run_ncp((server_fun) &test_self_port_server_tcp, (server_args_t *) &args, IP4_LOOPBACK_STR, "55002",
             "-p", "34234", NULL);
 }
 
@@ -90,11 +96,13 @@ void test_set_port_6() {
 
     in_port_t expected_port = htons(44444);
 
-    struct self_port_args args;
+    server_args_t args;
     args.self = &recv;
-    args.expected_port = &expected_port;
+    args.file_path = NULL;
+    args.is_stdin = false;
+    args.extra = &expected_port;
 
-    run_ncp((server_fun) &test_self_port_server_tcp, (server_args_t *) &args, TEST_FILE_PATH, IP6_LOOPBACK_STR, "54343",
+    run_ncp((server_fun) &test_self_port_server_tcp, &args, IP6_LOOPBACK_STR, "54343",
             "-p", "44444", "-6", NULL);
 }
 

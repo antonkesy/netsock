@@ -3,9 +3,12 @@
 
 #include <stddef.h>
 #include <arpa/inet.h>
+#include "../../../src/network/network.h"
 
 typedef struct {
-    struct sockaddr_in *self;
+    sockaddr_t *self;
+    bool is_stdin;
+    const char *file_path;
     void *extra;
 } server_args_t;
 

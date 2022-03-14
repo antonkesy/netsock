@@ -69,15 +69,15 @@ test_file_socket(sockaddr_t *self, const char *expect_file_path, int type, prep_
     close(socket_fd);
 }
 
-void test_udp_server(struct test_file_server_args *args) {
-    test_file_socket(args->self, args->expected_file_path, SOCK_DGRAM, NULL, recv_udp);
+void test_udp_server(server_args_t *args) {
+    test_file_socket(args->self, args->file_path, SOCK_DGRAM, NULL, recv_udp);
 }
 
-void test_tcp_server(struct test_file_server_args *args) {
-    test_file_socket(args->self, args->expected_file_path, SOCK_STREAM, prep_tcp, recv_tcp);
+void test_tcp_server(server_args_t *args) {
+    test_file_socket(args->self, args->file_path, SOCK_STREAM, prep_tcp, recv_tcp);
 }
 
-void test_self_port_server_tcp(struct self_port_args *args) {
+void test_self_port_server_tcp(server_args_t *args) {
     int socket_fd = socket(args->self->in.sin_family, SOCK_STREAM, 0);
     PEASSERT(socket_fd != -1, "server socket failed")
 
@@ -90,5 +90,7 @@ void test_self_port_server_tcp(struct self_port_args *args) {
     int tcp_fd = accept(socket_fd, (struct sockaddr *) &out, &len);
     PEASSERT(tcp_fd != -1, "server accept failed")
 
-    assert(out.sin_port == *args->expected_port);
+    assert(out.sin_port == *(in_port_t *) args->extra);
+
+    close(socket_fd);
 }

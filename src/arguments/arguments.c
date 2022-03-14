@@ -23,7 +23,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     bool wasProtocolSet = false;
     bool wasVersionSet = false;
 
-    for (unsigned int i = 3U; i < argc; ++i) {
+    for (unsigned int i = 2U; i < argc; ++i) {
         if (argv[i][0] == PREFIX_CHAR) {
             const char *option = &argv[i][1];
             if (IS_FLAG(option, UDP_FLAG_STR)) {
@@ -95,10 +95,8 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
         out_flags->dest.in.sin_family = AF_INET;
     }
 
-    out_flags->file_path = argv[0];
-
     if (out_flags->protocol == UDP || out_flags->protocol == TCP) {
-        if (!parse_ip_destination((const char **) argv + 1, &out_flags->dest))
+        if (!parse_ip_destination((const char **) argv, &out_flags->dest))
             return false;
     }
 
@@ -151,7 +149,6 @@ bool parse_port(const char *in, in_port_t *out_port) {
 }
 
 void reset_args(args_t *args) {
-    args->file_path = NULL;
     args->protocol = TCP;
     args->isVerbose = false;
     args->self_port = 0;

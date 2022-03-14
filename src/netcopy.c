@@ -1,4 +1,3 @@
-#include <fcntl.h>
 #include <stdio.h>
 #include "arguments/arguments.h"
 #include "network/network.h"
@@ -10,14 +9,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    int fd = open(flags.file_path, O_RDONLY);
-    if (fd < 0) {
-        perror("could not open file");
-        return 0;
-    }
-    PRINTVI(flags.isVerbose, "opened file %s\n", flags.file_path)
-
-    size_t bytes_sent = send_file(fd, &flags.dest, &flags.self_port, &flags.protocol, 1024);
+    size_t bytes_sent = send_stdin(&flags.dest, &flags.self_port, &flags.protocol, 1024);
     PRINTVI(flags.isVerbose, "bytes sent: %lu\n", bytes_sent)
 
     return 0;

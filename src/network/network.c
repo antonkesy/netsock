@@ -7,9 +7,7 @@ ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
 ssize_t tcp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
-size_t
-send_file(int file_fd, const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol,
-          size_t buf_size) {
+size_t send_stdin(const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol, size_t buf_size) {
     int type;
     ssize_t (*send)(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
@@ -63,14 +61,10 @@ send_file(int file_fd, const sockaddr_t *dest, const in_port_t *self_port, const
     uint8_t *buffer[buf_size];
 
     size_t sum_sent = 0U;
-    ssize_t bytes_read;
-    ssize_t bytes_sent;
+    size_t bytes_read;
+    size_t bytes_sent;
     do {
-        bytes_read = read(file_fd, buffer, buf_size);
-        if (bytes_read < 0) {
-            perror("read error");
-            return sum_sent;
-        }
+        bytes_read = fread(buffer, 1, buf_size, stdin);
         bytes_sent = send(socket_fd, buffer, bytes_read, dest);
         if ((ssize_t) bytes_sent != bytes_read) {
             perror("send error");

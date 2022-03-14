@@ -14,8 +14,6 @@ typedef union {
     struct sockaddr_storage storage;
 } sockaddr_t;
 
-size_t
-send_file(int file_fd, const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol,
-          size_t buf_size);
+size_t send_stdin(const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol, size_t buf_size);
 
 #endif //NETCOPY_NETWORK_H
