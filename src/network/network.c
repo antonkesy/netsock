@@ -3,21 +3,20 @@
 #include <memory.h>
 #include "network.h"
 
+typedef ssize_t (*send_fun)(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
+
 ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
 ssize_t tcp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
-size_t send_stdin(const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol, size_t buf_size) {
+int prepare_socket(const sockaddr_t *dest, const in_port_t *self_port, const protocol_t *protocol) {
     int type;
-    ssize_t (*send)(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
 
     switch (*protocol) {
         case UDP:
-            send = &udp_send;
             type = SOCK_DGRAM;
             break;
         case TCP:
-            send = &tcp_send;
             type = SOCK_STREAM;
             break;
     }
@@ -58,6 +57,10 @@ size_t send_stdin(const sockaddr_t *dest, const in_port_t *self_port, const prot
         }
     }
 
+    return socket_fd;
+}
+
+size_t send_stdin(int socket, const sockaddr_t *dest, send_fun send, size_t buf_size) {
     uint8_t *buffer[buf_size];
 
     size_t sum_sent = 0U;
@@ -65,7 +68,7 @@ size_t send_stdin(const sockaddr_t *dest, const in_port_t *self_port, const prot
     size_t bytes_sent;
     do {
         bytes_read = fread(buffer, 1, buf_size, stdin);
-        bytes_sent = send(socket_fd, buffer, bytes_read, dest);
+        bytes_sent = send(socket, buffer, bytes_read, dest);
         if ((ssize_t) bytes_sent != bytes_read) {
             perror("send error");
             return sum_sent;
@@ -73,7 +76,7 @@ size_t send_stdin(const sockaddr_t *dest, const in_port_t *self_port, const prot
         sum_sent += bytes_sent;
     } while (bytes_read > 0);
 
-    close(socket_fd);
+    close(socket);
     return sum_sent;
 }
 
@@ -83,4 +86,17 @@ ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest) {
 
 ssize_t tcp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest) {
     return send(fd, buffer, n, 0);
+}
+
+size_t send_in(int socket, const sockaddr_t *dest, const protocol_t *protocol, size_t buf_size) {
+    send_fun send;
+    switch (*protocol) {
+        case UDP:
+            send = &udp_send;
+            break;
+        case TCP:
+            send = &tcp_send;
+            break;
+    }
+    return send_stdin(socket, dest, send, buf_size);
 }

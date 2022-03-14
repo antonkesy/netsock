@@ -9,7 +9,10 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    size_t bytes_sent = send_stdin(&flags.dest, &flags.self_port, &flags.protocol, 1024);
+    int socket = prepare_socket(&flags.dest, &flags.self_port, &flags.protocol);
+
+    size_t bytes_sent = send_in(socket, &flags.dest, &flags.protocol, 1024);
+
     PRINTVI(flags.isVerbose, "bytes sent: %lu\n", bytes_sent)
 
     return 0;
