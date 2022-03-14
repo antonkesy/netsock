@@ -36,8 +36,8 @@ send.o: src/network/send/send.c
 network.o: src/network/network.c
 	${BUILD_O}
 
-tests: ${TEST_SRC} netcopy
-	${CC} ${CFLAGS} ${TEST_SRC} -o ${BIN_DIR}/$@
+tests: ${TEST_SRC} main_netcopy.o netcopy.o
+	${CC} ${CFLAGS} ${TEST_SRC} ${NCP_DEP_O} ${BIN_DIR}/netcopy.o -o ${BIN_DIR}/$@
 
 directories:
 	mkdir -p ${DIRS}
