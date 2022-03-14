@@ -5,6 +5,8 @@
 #include <arpa/inet.h>
 #include "../../../src/network/network.h"
 
+#define BIN_NAME_STR "./netcopy"
+
 typedef struct {
     sockaddr_t *self;
     bool is_stdin;

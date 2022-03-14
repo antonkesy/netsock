@@ -39,7 +39,7 @@ void run_ncp(server_fun func, server_args_t *server_args, const char *args, ...)
                 dup2(file_fd, STDIN_FILENO);
                 close(file_fd);
             }
-            execv("./netcopy", (char *const *) argu);
+            execv(BIN_NAME_STR, (char *const *) argu);
             PASSERT(false, "exec failed")
         default:
             //first arg should be file
