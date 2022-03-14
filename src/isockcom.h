@@ -1,5 +1,5 @@
-#ifndef NETCOPY_H
-#define NETCOPY_H
+#ifndef ISOCKCOM_H
+#define ISOCKCOM_H
 
 enum Protocol {
     UDP, TCP
@@ -7,4 +7,4 @@ enum Protocol {
 
 typedef enum Protocol protocol_t;
 
-#endif //NETCOPY_H
+#endif //ISOCKCOM_H

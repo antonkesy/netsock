@@ -1,4 +1,4 @@
-all: directories netcopy
+all: directories isockcom
 
 CC=gcc
 CFLAGS=-Werror -Wall
@@ -8,16 +8,16 @@ DIRS=${BIN_DIR}
 
 BUILD_O=${CC} ${CFLAGS} -c $< -o ${BIN_DIR}/$@
 
-NCP_SRC=src/netcopy.c src/arguments/arguments.c src/network/network.c src/network/send/send.c src/network/recv/recv.c
-NCP_DEP_O= ${BIN_DIR}/netcopy.o ${BIN_DIR}/arguments.o ${BIN_DIR}/recv.o ${BIN_DIR}/send.o ${BIN_DIR}/network.o
+NCP_SRC=src/isockcom.c src/arguments/arguments.c src/network/network.c src/network/send/send.c src/network/recv/recv.c
+NCP_DEP_O= ${BIN_DIR}/isockcom.o ${BIN_DIR}/arguments.o ${BIN_DIR}/recv.o ${BIN_DIR}/send.o ${BIN_DIR}/network.o
 
 
 .PHONY: directories clean
 
-netcopy: netcopy.o arguments.o recv.o send.o network.o
+isockcom: isockcom.o arguments.o recv.o send.o network.o
 	${CC} ${CFLAGS} ${NCP_DEP_O} -o ${BIN_DIR}/$@
 
-netcopy.o: src/netcopy.c
+isockcom.o: src/isockcom.c
 	${BUILD_O}
 
 arguments.o: src/arguments/arguments.c

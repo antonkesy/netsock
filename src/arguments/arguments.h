@@ -1,9 +1,9 @@
-#ifndef NETCOPY_ARGUMENTS_H
-#define NETCOPY_ARGUMENTS_H
+#ifndef ISOCKCOM_ARGUMENTS_H
+#define ISOCKCOM_ARGUMENTS_H
 
 #include <stdbool.h>
 #include <arpa/inet.h>
-#include "../netcopy.h"
+#include "../isockcom.h"
 #include "../network/network.h"
 
 #define PREFIX_CHAR '-'
@@ -14,7 +14,7 @@
 #define IPV6_FLAG_STR "6"
 #define LISTEN_FLAG_STR "l"
 
-#define MIN_ARGC 2 //DEST_IP DEST_PORT
+#define MIN_ARGC 2 //IP PORT
 
 typedef struct {
     sockaddr_t dest;
@@ -25,4 +25,4 @@ typedef struct {
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags);
 
-#endif //NETCOPY_ARGUMENTS_H
+#endif //ISOCKCOM_ARGUMENTS_H

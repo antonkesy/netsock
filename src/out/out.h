@@ -1,5 +1,5 @@
-#ifndef NETCOPY_OUT_H
-#define NETCOPY_OUT_H
+#ifndef ISOCKCOM_OUT_H
+#define ISOCKCOM_OUT_H
 
 //print error
 #define PRINTE(str)                                     \
@@ -28,4 +28,4 @@ do                                                      \
         printf((const char*)(str),info);                \
 }while(0);
 
-#endif //NETCOPY_OUT_H
+#endif //ISOCKCOM_OUT_H

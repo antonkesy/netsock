@@ -5,7 +5,7 @@ UNIX POSIX UDP/TCP Socket communication tool
 ## Usage
 
 ```shell
-netcopy IP PORT [OPTIONS]
+isockcom IP PORT [OPTIONS]
 ```
 
 Simple loopback tcp connection
@@ -31,7 +31,7 @@ IPv6 TCP Listener
 TCP is default and doesn't need an extra option
 
 ```shell
-netcopy SELF_IP SELF_PORT -6 -l
+isockcom SELF_IP SELF_PORT -6 -l
 ```
 
 IPv4 UDP Sender
@@ -39,7 +39,7 @@ IPv4 UDP Sender
 IPv4 is default -> no flag required
 
 ```shell
-netcopy DEST_IP DEST_PORT -u
+isockcom DEST_IP DEST_PORT -u
 ```
 
 ## Test
