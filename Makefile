@@ -1,4 +1,4 @@
-all: directories netcopy tests
+all: directories netcopy
 
 CC=gcc
 CFLAGS=-Werror -Wall
@@ -9,17 +9,13 @@ DIRS=${BIN_DIR}
 BUILD_O=${CC} ${CFLAGS} -c $< -o ${BIN_DIR}/$@
 
 NCP_SRC=src/netcopy.c src/arguments/arguments.c src/network/network.c src/network/send/send.c src/network/recv/recv.c
-TEST_SRC=test/test.c test/util/socket/test_socket.c test/util/runner/test_runner.c test/util/file/test_file.c
-NCP_DEP_O=${BIN_DIR}/arguments.o ${BIN_DIR}/recv.o ${BIN_DIR}/send.o ${BIN_DIR}/network.o
+NCP_DEP_O= ${BIN_DIR}/netcopy.o ${BIN_DIR}/arguments.o ${BIN_DIR}/recv.o ${BIN_DIR}/send.o ${BIN_DIR}/network.o
 
 
 .PHONY: directories clean
 
-netcopy: main_netcopy.o arguments.o recv.o send.o network.o
-	${CC} ${CFLAGS} ${BIN_DIR}/main_netcopy.o ${NCP_DEP_O} -o ${BIN_DIR}/$@
-
-main_netcopy.o: src/netcopy.c
-	${BUILD_O} -DSTANDALONE
+netcopy: netcopy.o arguments.o recv.o send.o network.o
+	${CC} ${CFLAGS} ${NCP_DEP_O} -o ${BIN_DIR}/$@
 
 netcopy.o: src/netcopy.c
 	${BUILD_O}
@@ -35,9 +31,6 @@ send.o: src/network/send/send.c
 
 network.o: src/network/network.c
 	${BUILD_O}
-
-tests: ${TEST_SRC} main_netcopy.o netcopy.o
-	${CC} ${CFLAGS} ${TEST_SRC} ${NCP_DEP_O} ${BIN_DIR}/netcopy.o -o ${BIN_DIR}/$@
 
 directories:
 	mkdir -p ${DIRS}

@@ -5,15 +5,7 @@
 #include "network/network.h"
 #include "out/out.h"
 
-#ifdef STANDALONE
-
 int main(int argc, char *argv[]) {
-    return netcopy(argc, argv);
-}
-
-#endif
-
-int netcopy(int argc, char *argv[]) {
     args_t flags;
     if (!parse_args(argc - 1, &argv[1], &flags)) {
         return EXIT_FAILURE;

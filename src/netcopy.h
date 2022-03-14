@@ -7,6 +7,4 @@ enum Protocol {
 
 typedef enum Protocol protocol_t;
 
-int netcopy(int argc, char *argv[]);
-
 #endif //NETCOPY_H
