@@ -1,4 +1,4 @@
-# netcopy
+# isockcom
 
 UNIX POSIX UDP/TCP Socket communication tool
 
@@ -11,8 +11,8 @@ isockcom IP PORT [OPTIONS]
 Simple loopback tcp connection
 
 ```
-netcopy 127.0.0.1 55555 > ./out &
-netcopy 127.0.0.1 55555 < ./in 
+isockcom 127.0.0.1 55555 > ./out &
+isockcom 127.0.0.1 55555 < ./in 
 ```
 
 ### Options
