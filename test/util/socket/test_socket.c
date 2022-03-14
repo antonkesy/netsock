@@ -1,4 +1,5 @@
 #include "test_socket.h"
+#include "../out/out.h"
 #include <assert.h>
 #include <string.h>
 #include <unistd.h>
@@ -20,23 +21,23 @@ ssize_t recv_tcp(int socket_fd, void *buffer, size_t n) {
 
 int prep_tcp(int socket_fd) {
     struct sockaddr out;
-    assert(listen(socket_fd, 1) != -1);
+    PEASSERT(listen(socket_fd, 1) != -1, "listen failed")
     socklen_t len = sizeof(struct sockaddr_in);
     int tcp_fd = accept(socket_fd, &out, &len);
-    assert(tcp_fd != -1);
+    PEASSERT(tcp_fd != -1, "tcp accept failed")
     return tcp_fd;
 }
 
 void
 test_file_socket(sockaddr_t *self, const char *expect_file_path, int type, prep_sock prep, recv_fun recv) {
     int expect_fd = open(expect_file_path, O_RDONLY);
-    assert(expect_fd >= 0);
+    PEASSERT(expect_fd >= 0, "expected file open failed")
 
     int socket_fd = socket(self->in.sin_family, type, 0);
-    assert(socket_fd >= 0);
+    PEASSERT(socket_fd >= 0, "server socket failed")
 
     int bind_ret = bind(socket_fd, &self->addr, sizeof(sockaddr_t));
-    assert(bind_ret == 0);
+    PEASSERT(bind_ret == 0, "server bind failed")
 
     if (prep != NULL) {
         socket_fd = prep(socket_fd);
@@ -45,7 +46,7 @@ test_file_socket(sockaddr_t *self, const char *expect_file_path, int type, prep_
     uint size = sizeof(uint);
     int buf_size;
     int get_opt = getsockopt(socket_fd, SOL_SOCKET, SO_RCVBUF, (void *) &buf_size, &size);
-    assert(get_opt != -1);
+    PEASSERT(get_opt != -1, "get socket options failed");
 
     char recv_buf[buf_size];
     char file_buf[buf_size];
@@ -56,13 +57,13 @@ test_file_socket(sockaddr_t *self, const char *expect_file_path, int type, prep_
 
     do {
         bytes_recv = recv(socket_fd, recv_buf, buf_size);
-        assert(bytes_recv >= 0);
+        PEASSERT(bytes_recv >= 0, "recv failed")
         bytes_read = read(expect_fd, file_buf, bytes_recv);
-        assert(bytes_read == bytes_recv);
-        assert(memcmp(recv_buf, file_buf, bytes_read) == 0);
+        PEASSERT(bytes_read == bytes_recv, "read != recv")
+        PASSERT(memcmp(recv_buf, file_buf, bytes_read) == 0, "buffer not the same")
     } while (bytes_read > 0);
     //check EOF
-    assert(read(expect_fd, file_buf, 1) == 0);
+    PASSERT(read(expect_fd, file_buf, 1) == 0, "not end of file")
 
     close(expect_fd);
     close(socket_fd);
@@ -78,16 +79,16 @@ void test_tcp_server(struct test_file_server_args *args) {
 
 void test_self_port_server_tcp(struct self_port_args *args) {
     int socket_fd = socket(args->self->in.sin_family, SOCK_STREAM, 0);
-    assert(socket_fd != -1);
+    PEASSERT(socket_fd != -1, "server socket failed")
 
     int bind_ret = bind(socket_fd, &args->self->addr, sizeof(sockaddr_t));
-    assert(bind_ret == 0);
+    PEASSERT(bind_ret == 0, "server bind failed")
 
     struct sockaddr_in out;
-    assert(listen(socket_fd, 1) != -1);
+    PEASSERT(listen(socket_fd, 1) != -1, "server listen failed")
     socklen_t len = sizeof(struct sockaddr_in);
     int tcp_fd = accept(socket_fd, (struct sockaddr *) &out, &len);
-    assert(tcp_fd != -1);
+    PEASSERT(tcp_fd != -1, "server accept failed")
 
     assert(out.sin_port == *args->expected_port);
 }

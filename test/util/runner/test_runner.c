@@ -1,7 +1,9 @@
 #include <unistd.h>
 #include <assert.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include "test_runner.h"
+#include "../out/out.h"
 
 
 void run_ncp(server_fun func, server_args_t *server_args, const char *args, ...) {
@@ -26,7 +28,7 @@ void run_ncp(server_fun func, server_args_t *server_args, const char *args, ...)
     switch (fork()) {
         case 0:
             execv("./ncp", (char *const *) argu);
-            assert(1);
+            PASSERT(false, "exec failed")
         default:
             //first arg should be file
             func(server_args);

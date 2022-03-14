@@ -4,6 +4,7 @@
 #include "util/socket/test_socket.h"
 #include "util/runner/test_runner.h"
 #include "util/file/test_file.h"
+#include "util/out/out.h"
 
 #define TEST_FILE_PATH "./test.me"
 
@@ -18,10 +19,10 @@ sockaddr_t get_local_socket(int af, uint16_t port) {
 
     switch (af) {
         case AF_INET:
-            assert(inet_pton(af, IP4_LOOPBACK_STR, &(local_socket.in.sin_addr)) != -1);
+            PASSERT(inet_pton(af, IP4_LOOPBACK_STR, &(local_socket.in.sin_addr)) != -1, "couldn't parse IPv4 addr")
             break;
         case AF_INET6:
-            assert(inet_pton(af, IP6_LOOPBACK_STR, &(local_socket.in6.sin6_addr)) != -1);
+            PASSERT(inet_pton(af, IP6_LOOPBACK_STR, &(local_socket.in6.sin6_addr)) != -1, "couldn't parse IPv6 addr")
             break;
         default:
             exit(1);
@@ -106,5 +107,6 @@ int main() {
     test_tcp_6();
     test_set_port_4();
     test_set_port_6();
+
     return 0;
 }
