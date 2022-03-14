@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define IS_FLAG(flag) (strcmp(&argv[i][1], (const char*)(flag))==0)
+#define IS_FLAG(opt_str, flag) (strcmp(opt_str, (const char*)(flag))==0)
 
 void reset_args(args_t *args);
 
@@ -25,7 +25,8 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
 
     for (unsigned int i = 3U; i < argc; ++i) {
         if (argv[i][0] == PREFIX_CHAR) {
-            if (IS_FLAG(UDP_FLAG_STR)) {
+            const char *option = &argv[i][1];
+            if (IS_FLAG(option, UDP_FLAG_STR)) {
                 if (wasProtocolSet) {
                     PRINTE("double definition of protocol")
                     return false;
@@ -34,7 +35,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasProtocolSet = true;
                 continue;
             }
-            if (IS_FLAG(TCP_FLAG_STR)) {
+            if (IS_FLAG(option, TCP_FLAG_STR)) {
                 if (wasProtocolSet) {
                     PRINTE("double definition of protocol")
                     return false;
@@ -43,7 +44,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasProtocolSet = true;
                 continue;
             }
-            if (IS_FLAG(IPV4_FLAG_STR)) {
+            if (IS_FLAG(option, IPV4_FLAG_STR)) {
                 if (wasVersionSet) {
                     PRINTE("double definition of version")
                     return false;
@@ -52,7 +53,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasVersionSet = true;
                 continue;
             }
-            if (IS_FLAG(IPV6_FLAG_STR)) {
+            if (IS_FLAG(option, IPV6_FLAG_STR)) {
                 if (wasVersionSet) {
                     PRINTE("double definition of version")
                     return false;
@@ -61,7 +62,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasVersionSet = true;
                 continue;
             }
-            if (IS_FLAG(LOCAL_PORT_FLAG_STR)) {
+            if (IS_FLAG(option, LOCAL_PORT_FLAG_STR)) {
                 out_flags->isLocalPort = true;
                 if (i + 1 == argc) {
                     PRINTE("missing follow-up argument for local port")
@@ -74,7 +75,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 ++i;
                 continue;
             }
-            if (IS_FLAG(VERBOSE_FLAG_STR)) {
+            if (IS_FLAG(option, VERBOSE_FLAG_STR)) {
                 out_flags->isVerbose = true;
                 continue;
             }

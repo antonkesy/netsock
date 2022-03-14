@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "arguments/arguments.h"
 #include "network/network.h"
+#include "out/out.h"
 
 int main(int argc, char *argv[]) {
     args_t flags;
@@ -14,9 +15,10 @@ int main(int argc, char *argv[]) {
         perror("could not open file");
         return 0;
     }
+    PRINTVI(flags.isVerbose, "opened file %s\n", flags.file_path)
 
     size_t bytes_sent = send_file(fd, &flags.dest, &flags.self_port, &flags.protocol, 1024);
-    printf("bytes sent: %lu\n", bytes_sent);
+    PRINTVI(flags.isVerbose, "bytes sent: %lu\n", bytes_sent)
 
     return 0;
 }
