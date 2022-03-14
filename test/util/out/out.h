@@ -1,28 +1,28 @@
-#ifndef NETCOPY_OUT_H
-#define NETCOPY_OUT_H
+#ifndef NETCOPY_TEST_OUT_H
+#define NETCOPY_TEST_OUT_H
 
 #include <stdio.h>
 #include <stdbool.h>
 
 //print assert
-#define PASSERT(statement, print)               \
+#define PASSERT(statement, str)                 \
 do{                                             \
     bool pass = (bool)(statement);              \
     if(!pass)                                   \
     {                                           \
-        fprintf(stderr,(const char*)print);     \
+        fprintf(stderr,(const char*)str);       \
         fprintf(stderr,"\n");assert(pass);      \
     }                                           \
 }while(0);
 
 //print error assert
-#define PEASSERT(statement, print)              \
+#define PEASSERT(statement, str)                \
 do{                                             \
     bool pass = (bool)(statement);              \
     if(!pass)                                   \
     {                                           \
-        perror((const char*)print);             \
+        perror((const char*)str);               \
     }                                           \
 }while(0);
 
-#endif //NETCOPY_OUT_H
+#endif //NETCOPY_TEST_OUT_H
