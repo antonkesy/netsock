@@ -26,6 +26,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     for (unsigned int i = 2U; i < argc; ++i) {
         if (argv[i][0] == PREFIX_CHAR) {
             const char *option = &argv[i][1];
+
             if (IS_FLAG(option, UDP_FLAG_STR)) {
                 if (wasProtocolSet) {
                     PRINTE("double definition of protocol")
@@ -35,6 +36,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasProtocolSet = true;
                 continue;
             }
+
             if (IS_FLAG(option, TCP_FLAG_STR)) {
                 if (wasProtocolSet) {
                     PRINTE("double definition of protocol")
@@ -44,6 +46,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasProtocolSet = true;
                 continue;
             }
+
             if (IS_FLAG(option, IPV4_FLAG_STR)) {
                 if (wasVersionSet) {
                     PRINTE("double definition of version")
@@ -53,6 +56,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasVersionSet = true;
                 continue;
             }
+
             if (IS_FLAG(option, IPV6_FLAG_STR)) {
                 if (wasVersionSet) {
                     PRINTE("double definition of version")
@@ -62,16 +66,20 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                 wasVersionSet = true;
                 continue;
             }
+
             if (IS_FLAG(option, VERBOSE_FLAG_STR)) {
                 out_flags->isVerbose = true;
                 continue;
             }
+
             if (IS_FLAG(option, LISTEN_FLAG_STR)) {
                 out_flags->is_listening = true;
                 continue;
             }
+
             PRINTEI("unknown option", argv[i])
             return false;
+
         } else {
             PRINTEI("missing options prefix by ", argv[i])
             return false;
