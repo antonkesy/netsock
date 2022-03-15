@@ -41,4 +41,12 @@ sleep 3s
 
 diff -sq ./test.me ./tcp_out_6.tmp
 
+echo "Test Local Host && Auto IPv Selection"
+../isockcom localhost 55003 -u -l -6 >./autohost.tmp & #! NOT CLOSING listener
+../isockcom ::1 55003 -u <./test.me
+
+sleep 3s
+
+diff -sq ./test.me ./autohost.tmp
+
 cd ..

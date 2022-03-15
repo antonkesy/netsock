@@ -10,7 +10,7 @@ void reset_args(args_t *args);
 
 bool parse_port(const char *in, in_port_t *out_port);
 
-bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest);
+bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest, bool wasVersionSet);
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     if (argc < MIN_ARGC) {
@@ -95,33 +95,65 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     }
 
     if (out_flags->protocol == UDP || out_flags->protocol == TCP) {
-        if (!parse_ip_destination((const char **) argv, &out_flags->sockaddr))
+        if (!parse_ip_destination((const char **) argv, &out_flags->sockaddr, wasVersionSet))
             return false;
     }
 
     return true;
 }
 
-bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest) {
+bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest, bool wasVersionSet) {
     if (out_dest == NULL) return false;
 
-    void *addr_dest = NULL;
     void *port_dest = NULL;
-    switch (out_dest->in.sin_family) {
-        case AF_INET:
-            addr_dest = &out_dest->in.sin_addr;
-            port_dest = &out_dest->in.sin_port;
-            break;
-        case AF_INET6:
-            addr_dest = &out_dest->in6.sin6_addr;
+
+    if (wasVersionSet == true) {
+        void *addr_dest = NULL;
+        switch (out_dest->in.sin_family) {
+            case AF_INET:
+                addr_dest = &out_dest->in.sin_addr;
+                port_dest = &out_dest->in.sin_port;
+                break;
+            case AF_INET6:
+                addr_dest = &out_dest->in6.sin6_addr;
+                port_dest = &out_dest->in6.sin6_port;
+                break;
+            default:
+                return false;
+        }
+
+        if (strcmp(argv[0], "localhost") == 0) {
+            switch (out_dest->in.sin_family) {
+                case AF_INET:
+                    out_dest->in.sin_addr.s_addr = INADDR_LOOPBACK;
+                    break;
+                case AF_INET6:
+                    out_dest->in6.sin6_addr = in6addr_loopback;
+                    break;
+                default:
+                    return false;
+            }
+        } else {
+            if (inet_pton(out_dest->in.sin_family, argv[0], addr_dest) != 1) {
+                PRINTEI("not valid destination ip address ", argv[0])
+                return false;
+            }
+        }
+
+    } else {
+        //Test parsing ipv4/v6
+        port_dest = &out_dest->in.sin_port;
+        int inet_pton_result = inet_pton(AF_INET, argv[0], &out_dest->in.sin_addr);
+        if (inet_pton_result == -1) {
             port_dest = &out_dest->in6.sin6_port;
-            break;
+            inet_pton_result = inet_pton(AF_INET6, argv[0], &out_dest->in6.sin6_addr);
+            if (inet_pton_result == -1) {
+                PRINTEI("not valid destination ipv4 or ipv6 address ", argv[0])
+                return false;
+            }
+        }
     }
 
-    if (inet_pton(out_dest->in.sin_family, argv[0], addr_dest) != 1) {
-        PRINTEI("not valid destination ip address ", argv[0])
-        return false;
-    }
 
     if (!parse_port(argv[1], port_dest)) {
         return false;
