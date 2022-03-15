@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         bytes_communicated = send_in(socket, &args.sockaddr, &args.protocol, buffer_size);
     }
 
-    PRINTVI("bytes sent: %lu\n", bytes_communicated)
+    PRINTVI("total bytes sent: %lu\n", bytes_communicated)
 
     return 0;
 }
