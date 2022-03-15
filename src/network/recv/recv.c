@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "recv.h"
+#include "../../out/out.h"
 
-size_t recv_in(int socket, const sockaddr_t *dest, const protocol_t *protocol, size_t buf_size) {
+size_t recv_in(int socket, const protocol_t *protocol, size_t buf_size) {
     recv_fun recv;
     switch (*protocol) {
         case UDP:
@@ -23,6 +24,7 @@ size_t recv_stdin(int socket, recv_fun recv, size_t buf_size) {
     do {
         bytes_recv = recv(socket, buffer, buf_size);
         buffer[bytes_recv] = '\0';
+        PRINTVI("recv %li bytes\n", bytes_recv)
         fprintf(stdout, "%s", (char *) buffer);
         sum_recv += bytes_recv;
     } while (bytes_recv > 0);

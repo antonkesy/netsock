@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "send.h"
+#include "../../out/out.h"
 
 size_t send_stdin(int socket, const sockaddr_t *dest, send_fun send, size_t buf_size) {
     uint8_t buffer[buf_size];
@@ -11,6 +12,7 @@ size_t send_stdin(int socket, const sockaddr_t *dest, send_fun send, size_t buf_
     do {
         bytes_read = fread(buffer, 1, buf_size, stdin);
         bytes_sent = send(socket, buffer, bytes_read, dest);
+        PRINTVI("sent %li bytes\n", bytes_read)
         if ((ssize_t) bytes_sent != bytes_read) {
             perror("send error");
             return sum_sent;
