@@ -18,6 +18,7 @@ size_t send_stdin(int socket, const sockaddr_t *dest, send_fun send, size_t buf_
     size_t bytes_sent;
     do {
         bytes_read = fread(buffer, 1, buf_size, stdin);
+        if (bytes_read == 0) break;
         bytes_sent = send(socket, buffer, bytes_read, dest);
         PRINTVI("sent %li bytes\n", bytes_read)
         if ((ssize_t) bytes_sent != bytes_read) {
