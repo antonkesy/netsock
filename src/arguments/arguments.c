@@ -52,7 +52,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     PRINTE("double definition of version")
                     return false;
                 }
-                out_flags->dest.in.sin_family = AF_INET;
+                out_flags->sockaddr.in.sin_family = AF_INET;
                 wasVersionSet = true;
                 continue;
             }
@@ -62,7 +62,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
                     PRINTE("double definition of version")
                     return false;
                 }
-                out_flags->dest.in.sin_family = AF_INET6;
+                out_flags->sockaddr.in.sin_family = AF_INET6;
                 wasVersionSet = true;
                 continue;
             }
@@ -91,11 +91,11 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
         out_flags->protocol = TCP;
     }
     if (!wasVersionSet) {
-        out_flags->dest.in.sin_family = AF_INET;
+        out_flags->sockaddr.in.sin_family = AF_INET;
     }
 
     if (out_flags->protocol == UDP || out_flags->protocol == TCP) {
-        if (!parse_ip_destination((const char **) argv, &out_flags->dest))
+        if (!parse_ip_destination((const char **) argv, &out_flags->sockaddr))
             return false;
     }
 

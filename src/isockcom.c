@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    int socket = prepare_socket(&args.dest, &args.protocol, args.is_listening);
+    int socket = prepare_socket(&args.sockaddr, &args.protocol, args.is_listening);
 
     if (socket < 0) {
         return EXIT_FAILURE;
@@ -19,9 +19,9 @@ int main(int argc, char *argv[]) {
 
     size_t bytes_communicated;
     if (args.is_listening) {
-        bytes_communicated = recv_in(socket, &args.dest, &args.protocol, 1024);
+        bytes_communicated = recv_in(socket, &args.sockaddr, &args.protocol, 1024);
     } else {
-        bytes_communicated = send_in(socket, &args.dest, &args.protocol, 1024);
+        bytes_communicated = send_in(socket, &args.sockaddr, &args.protocol, 1024);
     }
 
     PRINTVI(args.isVerbose, "bytes sent: %lu\n", bytes_communicated)

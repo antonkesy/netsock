@@ -17,7 +17,7 @@
 #define MIN_ARGC 2 //IP PORT
 
 typedef struct {
-    sockaddr_t dest;
+    sockaddr_t sockaddr;
     protocol_t protocol;
     bool isVerbose;
     bool is_listening;
