@@ -6,8 +6,6 @@
 
 #define IS_FLAG(opt_str, flag) (strcmp(opt_str, (const char*)(flag))==0)
 
-void reset_args(args_t *args);
-
 bool parse_port(const char *in, in_port_t *out_port);
 
 bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest, bool wasVersionSet);
@@ -18,7 +16,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
         return false;
     }
 
-    reset_args(out_flags);
+    memset(out_flags, 0, sizeof(args_t));
 
     bool was_protocol_set = false;
     bool was_version_set = false;
@@ -177,10 +175,4 @@ bool parse_port(const char *in, in_port_t *out_port) {
 
     *out_port = htons(port);
     return true;
-}
-
-void reset_args(args_t *args) {
-    args->protocol = TCP;
-    args->isVerbose = false;
-    args->is_listening = false;
 }
