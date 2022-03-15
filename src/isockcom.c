@@ -4,6 +4,8 @@
 #include "arguments/arguments.h"
 #include "network/network.h"
 #include "out/out.h"
+#include "network/recv/recv.h"
+#include "network/send/send.h"
 
 bool is_verbose;
 

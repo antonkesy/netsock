@@ -3,6 +3,14 @@
 #include "recv.h"
 #include "../../out/out.h"
 
+typedef ssize_t (*recv_fun)(int fd, void *buffer, size_t n);
+
+ssize_t udp_recv(int fd, void *buffer, size_t n);
+
+ssize_t tcp_recv(int fd, void *buffer, size_t n);
+
+size_t recv_stdin(int socket, recv_fun recv, size_t buf_size);
+
 size_t recv_in(int socket, const protocol_t *protocol, size_t buf_size) {
     recv_fun recv;
     switch (*protocol) {

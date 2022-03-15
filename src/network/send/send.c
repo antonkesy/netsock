@@ -3,6 +3,13 @@
 #include "send.h"
 #include "../../out/out.h"
 
+typedef ssize_t (*send_fun)(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
+
+ssize_t udp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
+
+ssize_t tcp_send(int fd, const void *buffer, size_t n, const sockaddr_t *dest);
+
+
 size_t send_stdin(int socket, const sockaddr_t *dest, send_fun send, size_t buf_size) {
     uint8_t buffer[buf_size];
 

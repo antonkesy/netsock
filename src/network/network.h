@@ -16,8 +16,4 @@ typedef union {
 
 int prepare_socket(sockaddr_t *addr, const protocol_t *protocol, bool is_listener);
 
-size_t send_in(int socket, const sockaddr_t *dest, const protocol_t *protocol, size_t buf_size);
-
-size_t recv_in(int socket, const protocol_t *protocol, size_t buf_size);
-
 #endif //ISOCKCOM_NETWORK_H
