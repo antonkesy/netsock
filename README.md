@@ -21,8 +21,10 @@ isockcom 127.0.0.1 55555 < ./in
 - `-u` for UDP
 - `-t` for TCP (default)
 - `-v` activate verbose print in stdout
-- `-4` force IPv4 (default)
+- `-4` force IPv4 (default select by parsing ip address (first v4))
 - `-6` force IPv6
+
+When IP-Version is set, use ```localhost``` for loopback address
 
 #### Example
 
