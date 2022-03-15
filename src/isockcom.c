@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
-    is_verbose = args.isVerbose;
+    is_verbose = args.is_verbose;
 
     int socket = prepare_socket(&args.sockaddr, &args.protocol, args.is_listening);
 

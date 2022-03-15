@@ -19,7 +19,7 @@
 typedef struct {
     sockaddr_t sockaddr;
     protocol_t protocol;
-    bool isVerbose;
+    bool is_verbose;
     bool is_listening;
 } args_t;
 

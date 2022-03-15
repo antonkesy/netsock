@@ -20,55 +20,55 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
 
     reset_args(out_flags);
 
-    bool wasProtocolSet = false;
-    bool wasVersionSet = false;
+    bool was_protocol_set = false;
+    bool was_version_set = false;
 
     for (unsigned int i = 2U; i < argc; ++i) {
         if (argv[i][0] == PREFIX_CHAR) {
             const char *option = &argv[i][1];
 
             if (IS_FLAG(option, UDP_FLAG_STR)) {
-                if (wasProtocolSet) {
+                if (was_protocol_set) {
                     PRINTE("double definition of protocol")
                     return false;
                 }
                 out_flags->protocol = UDP;
-                wasProtocolSet = true;
+                was_protocol_set = true;
                 continue;
             }
 
             if (IS_FLAG(option, TCP_FLAG_STR)) {
-                if (wasProtocolSet) {
+                if (was_protocol_set) {
                     PRINTE("double definition of protocol")
                     return false;
                 }
                 out_flags->protocol = TCP;
-                wasProtocolSet = true;
+                was_protocol_set = true;
                 continue;
             }
 
             if (IS_FLAG(option, IPV4_FLAG_STR)) {
-                if (wasVersionSet) {
+                if (was_version_set) {
                     PRINTE("double definition of version")
                     return false;
                 }
                 out_flags->sockaddr.in.sin_family = AF_INET;
-                wasVersionSet = true;
+                was_version_set = true;
                 continue;
             }
 
             if (IS_FLAG(option, IPV6_FLAG_STR)) {
-                if (wasVersionSet) {
+                if (was_version_set) {
                     PRINTE("double definition of version")
                     return false;
                 }
                 out_flags->sockaddr.in.sin_family = AF_INET6;
-                wasVersionSet = true;
+                was_version_set = true;
                 continue;
             }
 
             if (IS_FLAG(option, VERBOSE_FLAG_STR)) {
-                out_flags->isVerbose = true;
+                out_flags->is_verbose = true;
                 continue;
             }
 
@@ -87,15 +87,15 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
     }
 
     //set default values
-    if (!wasProtocolSet) {
+    if (!was_protocol_set) {
         out_flags->protocol = TCP;
     }
-    if (!wasVersionSet) {
+    if (!was_version_set) {
         out_flags->sockaddr.in.sin_family = AF_INET;
     }
 
     if (out_flags->protocol == UDP || out_flags->protocol == TCP) {
-        if (!parse_ip_destination((const char **) argv, &out_flags->sockaddr, wasVersionSet))
+        if (!parse_ip_destination((const char **) argv, &out_flags->sockaddr, was_version_set))
             return false;
     }
 
