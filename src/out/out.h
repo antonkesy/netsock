@@ -1,5 +1,5 @@
-#ifndef ISOCKCOM_OUT_H
-#define ISOCKCOM_OUT_H
+#ifndef NETSOCK_OUT_H
+#define NETSOCK_OUT_H
 
 #include <stdbool.h>
 
@@ -32,4 +32,4 @@ do                                                      \
         printf((const char*)(str),info);                \
 }while(0);
 
-#endif //ISOCKCOM_OUT_H
+#endif //NETSOCK_OUT_H

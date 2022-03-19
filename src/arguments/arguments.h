@@ -1,9 +1,9 @@
-#ifndef ISOCKCOM_ARGUMENTS_H
-#define ISOCKCOM_ARGUMENTS_H
+#ifndef NETSOCK_ARGUMENTS_H
+#define NETSOCK_ARGUMENTS_H
 
 #include <stdbool.h>
 #include <arpa/inet.h>
-#include "../isockcom.h"
+#include "../netsock.h"
 #include "../network/network.h"
 
 #define PREFIX_CHAR '-'
@@ -25,4 +25,4 @@ typedef struct {
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags);
 
-#endif //ISOCKCOM_ARGUMENTS_H
+#endif //NETSOCK_ARGUMENTS_H

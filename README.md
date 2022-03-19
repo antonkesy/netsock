@@ -1,18 +1,18 @@
-# isockcom
+# netsock
 
 UNIX POSIX UDP/TCP Socket communication tool
 
 ## Usage
 
 ```shell
-isockcom IP PORT [OPTIONS]
+netsock IP PORT [OPTIONS]
 ```
 
 Simple loopback tcp connection
 
 ```
-isockcom 127.0.0.1 55555 > ./out &
-isockcom 127.0.0.1 55555 < ./in 
+netsock 127.0.0.1 55555 > ./out &
+netsock 127.0.0.1 55555 < ./in 
 ```
 
 ### Options
@@ -33,7 +33,7 @@ IPv6 TCP Listener
 TCP is default and doesn't need an extra option
 
 ```shell
-isockcom SELF_IP SELF_PORT -6 -l
+netsock SELF_IP SELF_PORT -6 -l
 ```
 
 IPv4 UDP Sender
@@ -41,7 +41,7 @@ IPv4 UDP Sender
 IPv4 is default -> no flag required
 
 ```shell
-isockcom DEST_IP DEST_PORT -u
+netsock DEST_IP DEST_PORT -u
 ```
 
 ## Test

@@ -1,11 +1,11 @@
-#ifndef ISOCKCOM_NETWORK_H
-#define ISOCKCOM_NETWORK_H
+#ifndef NETSOCK_NETWORK_H
+#define NETSOCK_NETWORK_H
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <arpa/inet.h>
 
-#include "../isockcom.h"
+#include "../netsock.h"
 
 typedef union {
     struct sockaddr addr;
@@ -16,4 +16,4 @@ typedef union {
 
 int prepare_socket(sockaddr_t *addr, const protocol_t *protocol, bool is_listener);
 
-#endif //ISOCKCOM_NETWORK_H
+#endif //NETSOCK_NETWORK_H
