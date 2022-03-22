@@ -1,6 +1,9 @@
 #!/bin/bash
 
-cd ../bin || exit
+cd ..
+make all
+
+cd bin || exit
 
 rm test -drf
 
