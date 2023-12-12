@@ -2,6 +2,15 @@
 
 UNIX POSIX UDP/TCP Socket communication tool
 
+## Build
+
+```shell
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
 ## Usage
 
 ```shell
@@ -12,7 +21,7 @@ Simple loopback tcp connection
 
 ```
 netsock 127.0.0.1 55555 > ./out &
-netsock 127.0.0.1 55555 < ./in 
+netsock 127.0.0.1 55555 < ./in
 ```
 
 ### Options
@@ -24,7 +33,7 @@ netsock 127.0.0.1 55555 < ./in
 - `-4` force IPv4 (default select by parsing ip address (first v4))
 - `-6` force IPv6
 
-When IP-Version is set, use ```localhost``` for loopback address
+When IP-Version is set, use `localhost` for loopback address
 
 #### Example
 
@@ -46,4 +55,4 @@ netsock DEST_IP DEST_PORT -u
 
 ## Test
 
-run ```./test/test.sh``` to confirm functionality with basic usage tests
+run `./test/test.sh` to confirm functionality with basic usage tests
