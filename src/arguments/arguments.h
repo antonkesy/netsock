@@ -1,8 +1,9 @@
 #ifndef NETSOCK_ARGUMENTS_H
 #define NETSOCK_ARGUMENTS_H
 
-#include <stdbool.h>
 #include <arpa/inet.h>
+#include <stdbool.h>
+
 #include "../netsock.h"
 #include "../network/network.h"
 
@@ -14,15 +15,15 @@
 #define IPV6_FLAG_STR "6"
 #define LISTEN_FLAG_STR "l"
 
-#define MIN_ARGC 2 //IP PORT
+#define MIN_ARGC 2  // IP PORT
 
 typedef struct {
-    sockaddr_t sockaddr;
-    protocol_t protocol;
-    bool is_verbose;
-    bool is_listening;
+  sockaddr_t sockaddr;
+  protocol_t protocol;
+  bool is_verbose;
+  bool is_listening;
 } args_t;
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags);
 
-#endif //NETSOCK_ARGUMENTS_H
+#endif  // NETSOCK_ARGUMENTS_H

@@ -5,12 +5,10 @@
 
 #include <stdbool.h>
 
-enum Protocol {
-    TCP = 0, UDP = 1
-};
+enum Protocol { TCP = 0, UDP = 1 };
 
 typedef enum Protocol protocol_t;
 
 int get_buffer_size(int socket_fd, bool is_listener);
 
-#endif //NETSOCK_H
+#endif  // NETSOCK_H
