@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "../protocol/protocol.h"
+#include "protocol.h"
 
 typedef union {
   struct sockaddr addr;

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "../logger/logger.h"
+#include "logger.h"
 
 int prepare_sender(sockaddr_t* addr, const protocol_t* protocol,
                    int socket_fd) {

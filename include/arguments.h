@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 #include <stdbool.h>
 
-#include "../network/network.h"
+#include "network.h"
 
 #define PREFIX_CHAR '-'
 #define UDP_FLAG_STR "u"

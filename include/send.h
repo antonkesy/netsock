@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-#include "../network.h"
+#include "network.h"
 
 size_t send_in(int socket, const sockaddr_t *dest, const protocol_t *protocol,
                size_t buf_size);

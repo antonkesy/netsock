@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../logger/logger.h"
+#include "logger.h"
 
 #define IS_FLAG(opt_str, flag) (strcmp(opt_str, (const char *)(flag)) == 0)
 

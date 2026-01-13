@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "arguments/arguments.h"
-#include "logger/logger.h"
-#include "network/network.h"
-#include "network/recv/recv.h"
-#include "network/send/send.h"
+#include "arguments.h"
+#include "logger.h"
+#include "network.h"
+#include "recv.h"
+#include "send.h"
 
 int get_buffer_size(int socket_fd, bool is_listener);
 
