@@ -4,7 +4,6 @@
 #include <arpa/inet.h>
 #include <stdbool.h>
 
-#include "../netsock.h"
 #include "../network/network.h"
 
 #define PREFIX_CHAR '-'

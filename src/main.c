@@ -1,5 +1,6 @@
-#include "netsock.h"
+#define DEFAULT_BUF_SIZE 1024
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,7 +12,9 @@
 
 bool is_verbose;
 
-int main(int argc, char *argv[]) {
+int get_buffer_size(int socket_fd, bool is_listener);
+
+int main(int argc, char* argv[]) {
   args_t args;
   if (!parse_args(argc - 1, &argv[1], &args)) {
     return EXIT_FAILURE;
@@ -45,7 +48,7 @@ int get_buffer_size(int socket_fd, bool is_listener) {
   int buf_size;
   int get_opt =
       getsockopt(socket_fd, SOL_SOCKET, is_listener ? SO_RCVBUF : SO_SNDBUF,
-                 (void *)&buf_size, &size);
+                 (void*)&buf_size, &size);
   if (get_opt == -1) {
     PRINTE("couldn't get system socket size");
     buf_size = DEFAULT_BUF_SIZE;
