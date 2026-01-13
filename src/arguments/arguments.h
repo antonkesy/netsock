@@ -14,8 +14,6 @@
 #define IPV6_FLAG_STR "6"
 #define LISTEN_FLAG_STR "l"
 
-#define MIN_ARGC 2  // IP PORT
-
 typedef struct {
   sockaddr_t sockaddr;
   protocol_t protocol;

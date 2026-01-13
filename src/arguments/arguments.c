@@ -14,7 +14,7 @@ bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
                           bool wasVersionSet);
 
 bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
-  if (argc < MIN_ARGC) {
+  if (argc < 2) {  // self + 1 arg
     PRINTE("too few arguments")
     return false;
   }
