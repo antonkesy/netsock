@@ -3,8 +3,8 @@
 
 #include <stddef.h>
 
-#include "network.h"
+#include "protocol.h"
 
-size_t recv_in(int socket, const protocol_t *protocol, size_t buf_size);
+size_t recv_in(int socket, const protocol_t* protocol, size_t buf_size);
 
 #endif  // NETSOCK_RECV_H

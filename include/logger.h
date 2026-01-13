@@ -3,7 +3,6 @@
 
 #include <stdarg.h>
 #include <stdbool.h>
-#include <stdio.h>
 
 extern bool is_verbose;
 
