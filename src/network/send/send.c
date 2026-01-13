@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "../../out/out.h"
+#include "../../logger/logger.h"
 
 typedef ssize_t (*send_fun)(int fd, const void *buffer, size_t n,
                             const sockaddr_t *dest);
@@ -23,7 +23,7 @@ size_t send_stdin(int socket, const sockaddr_t *dest, send_fun send,
     bytes_read = fread(buffer, 1, buf_size, stdin);
     if (bytes_read == 0) break;
     bytes_sent = send(socket, buffer, bytes_read, dest);
-    PRINTVI("sent %li bytes\n", bytes_read)
+    netsock_log("sent %li bytes\n", bytes_read);
     if ((ssize_t)bytes_sent != bytes_read) {
       perror("send error");
       return sum_sent;

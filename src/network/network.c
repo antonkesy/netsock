@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "../out/out.h"
+#include "../logger/logger.h"
 
-int prepare_sender(sockaddr_t *addr, const protocol_t *protocol,
+int prepare_sender(sockaddr_t* addr, const protocol_t* protocol,
                    int socket_fd) {
   if (*protocol == TCP) {
-    PRINTV("connect\n")
+    netsock_log("connect\n");
     if (connect(socket_fd, &addr->addr, sizeof(sockaddr_t)) == -1) {
       perror("tcp connection error");
       return -1;
@@ -18,7 +18,7 @@ int prepare_sender(sockaddr_t *addr, const protocol_t *protocol,
   return socket_fd;
 }
 
-int prepare_listener(sockaddr_t *addr, const protocol_t *protocol,
+int prepare_listener(sockaddr_t* addr, const protocol_t* protocol,
                      int socket_fd) {
   switch (addr->in.sin_family) {
     case AF_INET:
@@ -29,7 +29,7 @@ int prepare_listener(sockaddr_t *addr, const protocol_t *protocol,
       break;
   }
 
-  PRINTV("bind socket\n")
+  netsock_log("bind socket\n");
   int bind_ret = bind(socket_fd, &addr->addr, sizeof(sockaddr_t));
   if (bind_ret == -1) {
     perror("couldn't bind socket");
@@ -37,13 +37,13 @@ int prepare_listener(sockaddr_t *addr, const protocol_t *protocol,
   }
 
   if (*protocol == TCP) {
-    PRINTV("listen\n")
+    netsock_log("listen\n");
     int list_ret = listen(socket_fd, 1);
     if (list_ret == -1) {
       perror("listen failed");
       return -1;
     }
-    PRINTV("accept\n")
+    netsock_log("accept\n");
     socklen_t len = sizeof(struct sockaddr_in);
     socket_fd = accept(socket_fd, NULL, &len);
     if (socket_fd < 0) {
@@ -53,16 +53,16 @@ int prepare_listener(sockaddr_t *addr, const protocol_t *protocol,
   return socket_fd;
 }
 
-int prepare_socket(sockaddr_t *addr, const protocol_t *protocol,
+int prepare_socket(sockaddr_t* addr, const protocol_t* protocol,
                    bool is_listener) {
   int type;
   switch (*protocol) {
     case UDP:
-      PRINTV("create UDP socket\n")
+      netsock_log("create UDP socket\n");
       type = SOCK_DGRAM;
       break;
     case TCP:
-      PRINTV("create TCP socket\n")
+      netsock_log("create TCP socket\n");
       type = SOCK_STREAM;
       break;
     default:

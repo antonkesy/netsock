@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "../../out/out.h"
+#include "../../logger/logger.h"
 
 typedef ssize_t (*recv_fun)(int fd, void *buffer, size_t n);
 
@@ -34,7 +34,7 @@ size_t recv_stdin(int socket, recv_fun recv, size_t buf_size) {
   do {
     bytes_recv = recv(socket, buffer, buf_size);
     buffer[bytes_recv] = '\0';
-    PRINTVI("recv %li bytes\n", bytes_recv)
+    netsock_log("recv %li bytes\n", bytes_recv);
     fprintf(stdout, "%s", (char *)buffer);
     sum_recv += bytes_recv;
   } while (bytes_recv > 0);

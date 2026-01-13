@@ -6,6 +6,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wall")
 
 set(SRC
     src/arguments/arguments.c
+    src/logger/logger.c
     src/network/network.c
     src/network/send/send.c
     src/network/recv/recv.c
