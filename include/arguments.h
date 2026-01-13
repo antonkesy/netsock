@@ -21,6 +21,6 @@ typedef struct {
   bool is_listening;
 } args_t;
 
-bool parse_args(unsigned int argc, char *argv[], args_t *out_flags);
+bool parse_args(unsigned int argc, const char* argv[], args_t* out_flags);
 
 #endif  // NETSOCK_ARGUMENTS_H

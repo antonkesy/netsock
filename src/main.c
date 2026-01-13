@@ -14,7 +14,7 @@ int get_buffer_size(int socket_fd, bool is_listener);
 
 int main(int argc, char* argv[]) {
   args_t args;
-  if (!parse_args(argc - 1, &argv[1], &args)) {
+  if (!parse_args(argc - 1, (const char**)&argv[1], &args)) {
     return EXIT_FAILURE;
   }
 

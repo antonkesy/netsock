@@ -6,14 +6,14 @@
 
 #include "logger.h"
 
-#define IS_FLAG(opt_str, flag) (strcmp(opt_str, (const char *)(flag)) == 0)
+#define IS_FLAG(opt_str, flag) (strcmp(opt_str, (const char*)(flag)) == 0)
 
-bool parse_port(const char *in, in_port_t *out_port);
+bool parse_port(const char* in, in_port_t* out_port);
 
-bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
+bool parse_ip_destination(const char* argv[2], sockaddr_t* out_dest,
                           bool wasVersionSet);
 
-bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
+bool parse_args(unsigned int argc, const char* argv[], args_t* out_flags) {
   if (argc < 2) {  // self + 1 arg
     netsock_error("too few arguments");
     return false;
@@ -26,7 +26,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
 
   for (unsigned int i = 2U; i < argc; ++i) {
     if (argv[i][0] == PREFIX_CHAR) {
-      const char *option = &argv[i][1];
+      const char* option = &argv[i][1];
 
       if (IS_FLAG(option, UDP_FLAG_STR)) {
         if (was_protocol_set) {
@@ -96,7 +96,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
   }
 
   if (out_flags->protocol == UDP || out_flags->protocol == TCP) {
-    if (!parse_ip_destination((const char **)argv, &out_flags->sockaddr,
+    if (!parse_ip_destination((const char**)argv, &out_flags->sockaddr,
                               was_version_set))
       return false;
   }
@@ -104,14 +104,14 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
   return true;
 }
 
-bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
+bool parse_ip_destination(const char* argv[2], sockaddr_t* out_dest,
                           bool wasVersionSet) {
   if (out_dest == NULL) return false;
 
-  void *port_dest = NULL;
+  void* port_dest = NULL;
 
   if (wasVersionSet == true) {
-    void *addr_dest = NULL;
+    void* addr_dest = NULL;
     switch (out_dest->in.sin_family) {
       case AF_INET:
         addr_dest = &out_dest->in.sin_addr;
@@ -164,10 +164,10 @@ bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
   return true;
 }
 
-bool parse_port(const char *in, in_port_t *out_port) {
+bool parse_port(const char* in, in_port_t* out_port) {
   if (out_port == NULL) return false;
 
-  char *end;
+  char* end;
   long port = strtol(in, &end, 10);
   size_t len = strlen(in);
   size_t end_offset = (end - in);
