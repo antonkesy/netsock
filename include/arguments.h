@@ -4,8 +4,7 @@
 #include <arpa/inet.h>
 #include <stdbool.h>
 
-#include "../netsock.h"
-#include "../network/network.h"
+#include "network.h"
 
 #define PREFIX_CHAR '-'
 #define UDP_FLAG_STR "u"
@@ -15,8 +14,6 @@
 #define IPV6_FLAG_STR "6"
 #define LISTEN_FLAG_STR "l"
 
-#define MIN_ARGC 2  // IP PORT
-
 typedef struct {
   sockaddr_t sockaddr;
   protocol_t protocol;
@@ -24,6 +21,6 @@ typedef struct {
   bool is_listening;
 } args_t;
 
-bool parse_args(unsigned int argc, char *argv[], args_t *out_flags);
+bool parse_args(unsigned int argc, const char* argv[], args_t* out_flags);
 
 #endif  // NETSOCK_ARGUMENTS_H

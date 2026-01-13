@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "../netsock.h"
+#include "protocol.h"
 
 typedef union {
   struct sockaddr addr;
@@ -14,7 +14,7 @@ typedef union {
   struct sockaddr_storage storage;
 } sockaddr_t;
 
-int prepare_socket(sockaddr_t *addr, const protocol_t *protocol,
+int prepare_socket(sockaddr_t* addr, const protocol_t* protocol,
                    bool is_listener);
 
 #endif  // NETSOCK_NETWORK_H

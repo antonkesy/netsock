@@ -4,18 +4,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../out/out.h"
+#include "logger.h"
 
-#define IS_FLAG(opt_str, flag) (strcmp(opt_str, (const char *)(flag)) == 0)
+#define IS_FLAG(opt_str, flag) (strcmp(opt_str, (const char*)(flag)) == 0)
 
-bool parse_port(const char *in, in_port_t *out_port);
+bool parse_port(const char* in, in_port_t* out_port);
 
-bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
+bool parse_ip_destination(const char* argv[2], sockaddr_t* out_dest,
                           bool wasVersionSet);
 
-bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
-  if (argc < MIN_ARGC) {
-    PRINTE("too few arguments")
+bool parse_args(unsigned int argc, const char* argv[], args_t* out_flags) {
+  if (argc < 2) {  // self + 1 arg
+    netsock_error("too few arguments");
     return false;
   }
 
@@ -26,11 +26,11 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
 
   for (unsigned int i = 2U; i < argc; ++i) {
     if (argv[i][0] == PREFIX_CHAR) {
-      const char *option = &argv[i][1];
+      const char* option = &argv[i][1];
 
       if (IS_FLAG(option, UDP_FLAG_STR)) {
         if (was_protocol_set) {
-          PRINTE("double definition of protocol")
+          netsock_error("double definition of protocol");
           return false;
         }
         out_flags->protocol = UDP;
@@ -40,7 +40,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
 
       if (IS_FLAG(option, TCP_FLAG_STR)) {
         if (was_protocol_set) {
-          PRINTE("double definition of protocol")
+          netsock_error("double definition of protocol");
           return false;
         }
         out_flags->protocol = TCP;
@@ -50,7 +50,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
 
       if (IS_FLAG(option, IPV4_FLAG_STR)) {
         if (was_version_set) {
-          PRINTE("double definition of version")
+          netsock_error("double definition of version");
           return false;
         }
         out_flags->sockaddr.in.sin_family = AF_INET;
@@ -60,7 +60,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
 
       if (IS_FLAG(option, IPV6_FLAG_STR)) {
         if (was_version_set) {
-          PRINTE("double definition of version")
+          netsock_error("double definition of version");
           return false;
         }
         out_flags->sockaddr.in.sin_family = AF_INET6;
@@ -78,11 +78,11 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
         continue;
       }
 
-      PRINTEI("unknown option", argv[i])
+      netsock_error("unknown option", argv[i]);
       return false;
 
     } else {
-      PRINTEI("missing options prefix by ", argv[i])
+      netsock_error("missing options prefix by ", argv[i]);
       return false;
     }
   }
@@ -96,7 +96,7 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
   }
 
   if (out_flags->protocol == UDP || out_flags->protocol == TCP) {
-    if (!parse_ip_destination((const char **)argv, &out_flags->sockaddr,
+    if (!parse_ip_destination((const char**)argv, &out_flags->sockaddr,
                               was_version_set))
       return false;
   }
@@ -104,14 +104,14 @@ bool parse_args(unsigned int argc, char *argv[], args_t *out_flags) {
   return true;
 }
 
-bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
+bool parse_ip_destination(const char* argv[2], sockaddr_t* out_dest,
                           bool wasVersionSet) {
   if (out_dest == NULL) return false;
 
-  void *port_dest = NULL;
+  void* port_dest = NULL;
 
   if (wasVersionSet == true) {
-    void *addr_dest = NULL;
+    void* addr_dest = NULL;
     switch (out_dest->in.sin_family) {
       case AF_INET:
         addr_dest = &out_dest->in.sin_addr;
@@ -138,7 +138,7 @@ bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
       }
     } else {
       if (inet_pton(out_dest->in.sin_family, argv[0], addr_dest) != 1) {
-        PRINTEI("not valid destination ip address ", argv[0])
+        netsock_error("not valid destination ip address ", argv[0]);
         return false;
       }
     }
@@ -151,7 +151,7 @@ bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
       port_dest = &out_dest->in6.sin6_port;
       inet_pton_result = inet_pton(AF_INET6, argv[0], &out_dest->in6.sin6_addr);
       if (inet_pton_result == -1) {
-        PRINTEI("not valid destination ipv4 or ipv6 address ", argv[0])
+        netsock_error("not valid destination ipv4 or ipv6 address ", argv[0]);
         return false;
       }
     }
@@ -164,15 +164,15 @@ bool parse_ip_destination(const char *argv[2], sockaddr_t *out_dest,
   return true;
 }
 
-bool parse_port(const char *in, in_port_t *out_port) {
+bool parse_port(const char* in, in_port_t* out_port) {
   if (out_port == NULL) return false;
 
-  char *end;
+  char* end;
   long port = strtol(in, &end, 10);
   size_t len = strlen(in);
   size_t end_offset = (end - in);
   if (end_offset != len || port == 0 || port > 65535) {
-    PRINTEI("port out of range ", out_port)
+    netsock_error("port out of range ", out_port);
     return false;
   }
 

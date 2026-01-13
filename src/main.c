@@ -1,23 +1,24 @@
-#include "netsock.h"
+#define DEFAULT_BUF_SIZE 1024
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "arguments/arguments.h"
-#include "network/network.h"
-#include "network/recv/recv.h"
-#include "network/send/send.h"
-#include "out/out.h"
+#include "arguments.h"
+#include "logger.h"
+#include "network.h"
+#include "recv.h"
+#include "send.h"
 
-bool is_verbose;
+int get_buffer_size(int socket_fd, bool is_listener);
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   args_t args;
-  if (!parse_args(argc - 1, &argv[1], &args)) {
+  if (!parse_args(argc - 1, (const char**)&argv[1], &args)) {
     return EXIT_FAILURE;
   }
 
-  is_verbose = args.is_verbose;
+  if (is_verbose) set_verbose();
 
   int socket =
       prepare_socket(&args.sockaddr, &args.protocol, args.is_listening);
@@ -35,7 +36,7 @@ int main(int argc, char *argv[]) {
         send_in(socket, &args.sockaddr, &args.protocol, buffer_size);
   }
 
-  PRINTVI("total bytes sent: %lu\n", bytes_communicated)
+  netsock_log("total bytes sent: %lu\n", bytes_communicated);
 
   return 0;
 }
@@ -45,13 +46,13 @@ int get_buffer_size(int socket_fd, bool is_listener) {
   int buf_size;
   int get_opt =
       getsockopt(socket_fd, SOL_SOCKET, is_listener ? SO_RCVBUF : SO_SNDBUF,
-                 (void *)&buf_size, &size);
+                 (void*)&buf_size, &size);
   if (get_opt == -1) {
-    PRINTE("couldn't get system socket size");
+    netsock_error("couldn't get system socket size");
     buf_size = DEFAULT_BUF_SIZE;
   }
 
-  PRINTVI("set socket buffer to: %d\n", buf_size)
+  netsock_log("set socket buffer to: %d\n", buf_size);
 
   return buf_size;
 }

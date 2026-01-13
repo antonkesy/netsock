@@ -2,6 +2,8 @@
 
 UNIX POSIX UDP/TCP Socket communication tool
 
+Cheap copy of `netcat`
+
 ## Build
 
 ```shell
@@ -55,4 +57,5 @@ netsock DEST_IP DEST_PORT -u
 
 ## Test
 
-run `./test/test.sh` to confirm functionality with basic usage tests
+Run `./test/test.sh` to confirm functionality with basic usage tests.  
+GTests are also available by running `ctest` inside of `build`.
