@@ -1,9 +1,8 @@
 #!/bin/bash
 
+# test setup in build
 cd build || exit
-
 rm test -drf
-
 mkdir -p test
 cd test || exit
 
